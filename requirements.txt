@@ -1,0 +1,20 @@
+# AED · Visão Computacional (CDI1021) — Checkpoint 1
+# Python 3.10 ou superior
+#
+#   pip install -r requirements.txt
+#
+# No Google Colab a instalação é automática: a primeira célula do notebook
+# instala apenas o que faltar no ambiente.
+
+numpy>=1.26,<3.0
+opencv-python>=4.8
+matplotlib>=3.7
+pandas>=2.0
+PyYAML>=6.0
+
+# Download do dataset a partir do Roboflow Universe (opcional: existem os
+# caminhos B e C, documentados na Seção 1 do notebook).
+roboflow>=1.1.30
+
+# Execução local do notebook (desnecessário no Google Colab).
+jupyterlab>=4.0

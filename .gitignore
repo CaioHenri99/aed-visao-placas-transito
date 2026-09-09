@@ -1,0 +1,35 @@
+# ---------------------------------------------------------------- dados
+# Imagens não são versionadas no Git: o notebook as baixa a partir do
+# Roboflow e o inventário em outputs/inventario_dataset.csv registra o que
+# foi usado, garantindo a reprodutibilidade sem inflar o repositório.
+data/*
+!data/.gitkeep
+
+# --------------------------------------------------------------- saídas
+# As figuras e tabelas geradas SÃO versionadas (são a evidência visual do
+# checkpoint). Apenas o pacote compactado fica de fora.
+outputs_checkpoint1.zip
+
+# ------------------------------------------------------------- ambiente
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.python-version
+
+# ---------------------------------------------------------------- IDEs
+.vscode/
+.idea/
+*.swp
+
+# ------------------------------------------------------------- sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ------------------------------------------------------------- segredos
+# A chave da API do Roboflow é pedida em tempo de execução e nunca gravada.
+.env
+*.key
