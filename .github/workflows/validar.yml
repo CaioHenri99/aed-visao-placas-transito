@@ -1,0 +1,69 @@
+name: Validação do repositório
+
+# Verificações baratas que protegem os dois riscos reais deste projeto:
+# um notebook corrompido por merge e uma chave de API commitada por engano.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências de verificação
+        run: python -m pip install --quiet nbformat
+
+      - name: Validar o notebook (JSON íntegro e conforme ao nbformat)
+        run: |
+          python - <<'PY'
+          import glob, sys
+          import nbformat
+
+          notebooks = glob.glob("notebooks/**/*.ipynb", recursive=True)
+          if not notebooks:
+              sys.exit("Nenhum notebook encontrado em notebooks/")
+          for caminho in notebooks:
+              nb = nbformat.read(caminho, as_version=4)
+              nbformat.validate(nb)
+              codigo = sum(1 for c in nb.cells if c.cell_type == "code")
+              print(f"OK  {caminho}  ({len(nb.cells)} células, {codigo} de código)")
+          PY
+
+      - name: Conferir que o notebook não foi commitado com saídas pesadas
+        run: |
+          python - <<'PY'
+          import glob
+          import nbformat
+
+          for caminho in glob.glob("notebooks/**/*.ipynb", recursive=True):
+              nb = nbformat.read(caminho, as_version=4)
+              bytes_saida = sum(
+                  len(str(saida)) for c in nb.cells
+                  for saida in getattr(c, "outputs", [])
+              )
+              mb = bytes_saida / 1024 / 1024
+              print(f"{caminho}: {mb:.1f} MB de saídas embutidas")
+              assert mb < 20, (
+                  f"{caminho} carrega {mb:.1f} MB de saídas. Rode "
+                  "'Editar > Limpar todas as saídas' antes de commitar."
+              )
+          PY
+
+      - name: Procurar segredos commitados por engano
+        run: |
+          if git grep -nIE 'api_key[[:space:]]*=[[:space:]]*["'"'"'][A-Za-z0-9]{16,}' -- . ':!.github'; then
+            echo "::error::Possível chave de API encontrada no repositório."
+            echo "A chave do Roboflow deve ser informada em tempo de execução ou pela"
+            echo "variável de ambiente ROBOFLOW_API_KEY — nunca escrita no código."
+            exit 1
+          fi
+          echo "Nenhuma chave de API encontrada."

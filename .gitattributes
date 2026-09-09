@@ -1,0 +1,24 @@
+# Normaliza finais de linha no repositório (LF), independentemente do sistema
+# operacional de cada integrante — a equipe trabalha em Windows e no Colab.
+* text=auto eol=lf
+
+# Notebooks são JSON: precisam ser tratados como texto para que o diff funcione.
+*.ipynb text eol=lf
+*.py    text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.csv   text eol=lf
+
+# Binários: nunca normalizar.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.pdf  binary
+*.docx binary
+*.zip  binary
+
+# O GitHub classifica repositórios com notebooks como "Jupyter Notebook".
+# Marcar o notebook como código (e não documentação) mantém a linguagem correta.
+*.ipynb linguist-detectable=true
