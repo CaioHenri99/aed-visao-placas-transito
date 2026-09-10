@@ -3,7 +3,7 @@
 Fluxo de dados da imagem de entrada até a saída pretendida, indicando o ponto em que o
 modelo de IA entra nas próximas etapas do projeto.
 
-A versão renderizada em imagem — com os valores de parâmetro da última execução — é gerada
+A versão renderizada em imagem, com os valores de parâmetro da última execução, é gerada
 pela Seção 9 do notebook em [`arquitetura_pipeline.png`](arquitetura_pipeline.png).
 
 ---
@@ -13,7 +13,7 @@ pela Seção 9 do notebook em [`arquitetura_pipeline.png`](arquitetura_pipeline.
 ```mermaid
 flowchart TD
     subgraph AQ["1 · AQUISIÇÃO"]
-        A1["Dataset Roboflow<br/>placas-de-transito-1jw8i v2"]
+        A1["Dataset Roboflow<br/>placas-de-transito-br v9"]
         A2["Inventário automático<br/>quantidade · dimensões · classes"]
         A3["Anotações YOLO<br/>escala real do objeto"]
         A1 --> A2 --> A3
@@ -22,12 +22,12 @@ flowchart TD
     subgraph PRE["2 · PRÉ-PROCESSAMENTO"]
         B1["Redimensionar<br/>largura = 640 px · INTER_AREA"]
         B2["CLAHE no canal L* do LAB<br/>corrige luminância sem deslocar a matiz"]
-        B3["Suavização gaussiana 5×5<br/>precede a limiarização"]
+        B3["Suavização gaussiana 3×3<br/>kernel derivado da escala da placa"]
         B1 --> B2 --> B3
     end
 
     subgraph SEG["3 · SEGMENTAÇÃO"]
-        C1["Mapa de evidência cromática<br/>HSV · matizes CONTRAN × saturação"]
+        C1["Mapa de evidência cromática<br/>HSV · faixas medidas nas anotações<br/>portas S_min escolhidas por métrica"]
         C2["Limiarização<br/>global | Otsu | Otsu restrito | adaptativa"]
         C3["Abertura → fechamento<br/>→ preenchimento de buracos"]
         C1 --> C2 --> C3
@@ -105,8 +105,17 @@ tem dois lados: alimentar `findContours` com ela produz um contorno externo e ou
 para o mesmo objeto e duplica a contagem. A extração parte sempre da máscara morfológica
 preenchida.
 
+**As faixas de cor são medidas nas anotações, não fixadas à mão.** A norma fornece apenas as
+âncoras (vermelho, amarelo, verde, azul). A Seção 5.0 do notebook mede a matiz dominante de
+cada classe anotada, agrupa as classes em torno dessas âncoras e recalcula o centro e a largura
+de cada faixa a partir do que observou. Uma âncora sem objetos suficientes não vira faixa. Em
+seguida, o estágio 0 da busca em grade escolhe a porta de saturação de cada faixa por descida
+em coordenadas, e pode descartar uma faixa inteira quando ela custa mais em falsos positivos do
+que rende em detecções. Foi a falta desse passo que, numa versão anterior, manteve no pipeline
+uma faixa azul sem alvo, cuja única captura era o céu.
+
 **A filtragem por escala tem duas pontas, não uma.** O piso de área remove ruído residual; o
-teto remove céu, fachadas e maciços de vegetação. O teto não é redundante com os filtros de
-forma: uma faixa de céu azul limpo é convexa, tem extensão e solidez altas e razão de aspecto
-dentro do intervalo aceito — só a escala a distingue de uma placa de indicação. Ambos os
-limites vêm da distribuição de áreas anotadas, medida na Seção 2.1 do notebook.
+teto remove fachadas, toldos e maciços de vegetação fotografados de perto, que passam pelos
+filtros de forma por serem convexos e de proporção compatível. Ambos os limites vêm da
+distribuição de áreas anotadas, medida na Seção 2.1 do notebook, e o estágio 2 da busca mede
+se o teto ainda ajuda depois que a faixa azul saiu; "sem teto" é um resultado legítimo.

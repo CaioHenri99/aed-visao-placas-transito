@@ -1,5 +1,5 @@
-metodo,estagio,quantil_area_min,area_minima,quantil_area_max,area_maxima,precisao,recall,f1,vp,fp,fn,limiar_medio,limiar_desvio,ms_por_imagem
-otsu_restrito,1,0.5,536,1.0,0,0.359,0.248,0.294,106,189,321,83.0,25.2,19.7
-adaptativa,1,0.6,958,1.0,0,0.454,0.206,0.283,88,106,339,,,20.8
-otsu,1,0.4,315,1.0,0,0.251,0.274,0.262,117,350,310,50.5,13.9,21.5
-global,1,0.4,315,1.0,0,0.31,0.225,0.261,96,214,331,96.0,0.0,21.6
+metodo,estagio,portas,quantil_area_min,area_minima,quantil_area_max,area_maxima,precisao,recall,f1,vp,fp,fn,limiar_medio,limiar_desvio,ms_por_imagem
+adaptativa,1,vermelho=100;amarelo=160;azul=None,0.3,199,1.0,0,0.132,0.129,0.131,37,244,249,,,24.5
+otsu,1,vermelho=100;amarelo=160;azul=None,0.3,199,1.0,0,0.105,0.133,0.117,38,325,248,47.8,10.6,21.8
+otsu_restrito,1,vermelho=100;amarelo=160;azul=None,0.3,199,1.0,0,0.094,0.115,0.104,33,317,253,76.7,29.2,23.6
+global,1,vermelho=100;amarelo=160;azul=None,0.4,283,1.0,0,0.085,0.091,0.088,26,279,260,96.0,0.0,22.3
