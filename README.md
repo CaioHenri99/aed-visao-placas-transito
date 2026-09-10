@@ -4,7 +4,9 @@ AED / Projeto Integrador, 2ª Etapa, Checkpoint 1 (N1)
 
 Pontifícia Universidade Católica de Goiás
 Escola Politécnica e de Artes, Curso de Ciência de Dados e Inteligência Artificial
-Disciplina CDI1021 (Visão Computacional, 2026/2), Prof. Welington Júlio Dias Rodrigues
+Disciplina CDI1021 (Visão Computacional, 2026/2)
+
+- Prof. Welington Júlio Dias Rodrigues
 
 ---
 
@@ -156,14 +158,6 @@ normativas do CONTRAN. É assim que se descobre, por exemplo, que `I-4` é verde
 `LOC-6` são azuis e que os delineadores da classe `Del` puxam a faixa amarela para o âmbar. As
 faixas do pipeline saem dessa medição, e não de valores fixados à mão. O resultado fica em
 `figuras/00b_calibracao_cromatica.png` e nos recortes de `figuras/00c_recortes_por_faixa.png`.
-
-### Fontes complementares previstas
-
-| Fonte | Volume | Uso |
-|---|---|---|
-| GTSDB (*German Traffic Sign Detection Benchmark*) | 900 imagens, 1360×800 | Validação independente em cena completa |
-| GTSRB (*German Traffic Sign Recognition Benchmark*) | 51.839 recortes, 43 classes | Treinamento do classificador na 2ª Etapa |
-| Captura autoral em Goiânia (GO) | cerca de 60 imagens | Validação local, incorporada pelo caminho C da Seção 1 |
 
 ### Considerações éticas
 
@@ -335,7 +329,7 @@ Cada escolha do pipeline tem uma medição por trás, e não uma afirmação.
 A ablação existe por um motivo específico: responder com número ao erro mais comum apontado na
 orientação da AED, que é "segmentar sem suavizar antes, e concluir que Otsu não funciona".
 
-### O episódio do céu
+### 1° Tentativa
 
 Este caso está registrado porque mudou o pipeline e porque a primeira explicação estava errada.
 
@@ -438,15 +432,3 @@ O pipeline clássico permanece em uso na N2 em três papéis: correção de ilum
 pré-processamento do detector, filtro por área mínima como pós-processamento das caixas
 propostas e contagem clássica como linha de base comparativa. É contra os números da Seção 8
 que o ganho do modelo treinado será medido, por mAP, IoU e acurácia.
-
----
-
-## 11. Cronograma
-
-| Data | Marco | Situação |
-|---|---|---|
-| 31/08/2026 | Definição de tema e equipe | Concluído |
-| 06/09/2026 | Obtenção e estruturação do dataset | Concluído |
-| 11/09/2026 | Checkpoint 1, pipeline de PDI executável | Este entregável |
-| 29/09 e 02/10/2026 | Defesa técnica parcial | A preparar |
-| 02/10/2026 | Entrega final N1 (PP1), relatório em PDF | A preparar |
