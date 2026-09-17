@@ -1,7 +1,8 @@
 forma,objetos,ambiguos,% do total
-circular,252,252,93.7
-octogonal,7,0,2.6
-losango,5,0,1.9
-quadrilatero,3,3,1.1
-retangular,1,0,0.4
-triangular_invertido,1,0,0.4
+circular,288,288,89.4
+octogonal,13,0,4.0
+losango,12,0,3.7
+retangular,6,0,1.9
+quadrilatero,1,1,0.3
+triangular,1,0,0.3
+triangular_invertido,1,0,0.3

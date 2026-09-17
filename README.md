@@ -152,6 +152,19 @@ repositório não redistribui as imagens: o notebook as baixa da fonte e o `.git
 endereço estável. O que fica versionado são as figuras derivadas, usadas como evidência do
 checkpoint.
 
+**Dois tratamentos aplicados aos dados.** Nenhum deles remove imagem ou anotação da base,
+os dois corrigem a forma de ler e de dividir:
+
+1. **Rótulos em polígono.** 5 linhas (em 3 arquivos) vêm como polígono, com a classe seguida
+   de pares `x y`, em vez de caixa. Lidas como caixa, viravam placas com 75% da largura da
+   imagem. O `ler_rotulos` agora converte o polígono na caixa que o envolve.
+2. **Divisão por trecho de gravação.** A base são quadros de câmera veicular tirados em média
+   a cada 3 segundos. Sorteando imagem por imagem, a mesma placa vista um segundo depois caía
+   nas duas amostras: 55% das imagens de validação tinham um quadro de ajuste a menos de 30 s.
+   Agora os quadros são agrupados em trechos (um trecho novo começa após 30 s sem captura) e
+   cada trecho vai inteiro para um lado só. O quadro de validação mais próximo de um de ajuste
+   passou a estar a 31 s.
+
 **Sobre os números da tabela.** Eles são gerados pela Seção 2 do notebook, que percorre o
 dataset e grava `outputs/inventario_dataset.csv` com uma linha por imagem. Esse arquivo é a
 documentação da base efetivamente usada, e não a anotação manual reproduzida aqui.
@@ -185,7 +198,7 @@ imagem → redimensionar → corrigir iluminação → suavizar → mapa de evid
 | 2 | Iluminação | CLAHE no canal `L*` do LAB | Equalizar RGB canal a canal deslocaria a matiz, justamente o atributo em que a segmentação se apoia. No LAB, corrigir `L*` preserva a cor normativa. O *top-hat* fica disponível como alternativa |
 | 3 | Ruído | Filtro gaussiano 3×3, com o kernel derivado da escala da placa | O ruído de alta frequência polui o histograma e desloca o limiar de Otsu. A ordem importa: suavizar vem antes de limiarizar. O kernel precisa ser mais estreito que a orla da menor placa, senão mistura orla e miolo e derruba a saturação |
 | 4 | Evidência | Mapa escalar em HSV, com pesos gaussianos nas matizes vermelha e amarela multiplicados pela saturação, atrás de uma porta mínima de saturação por faixa | Converte a noção de "parece uma placa" em um único canal contínuo, apto à limiarização. Usa distância circular de matiz, porque o vermelho ocupa as duas pontas da escala `H`. A porta de saturação é o que separa placa de grama seca, solo e fachada, e é escolhida por métrica |
-| 5 | Segmentação | Limiarização global, Otsu, Otsu restrito e adaptativa, com a adaptativa adotada | A escolha entre elas é feita por métrica, conforme a Seção 6. O limiar T de Otsu de cada imagem é registrado como diagnóstico de iluminação, como pede a receita da Apostila 02 |
+| 5 | Segmentação | Limiarização global, Otsu, Otsu restrito e adaptativa, com a global adotada | A escolha é feita por métrica, conforme a Seção 6. Nesta base os quatro empatam dentro de 0,005 de F1, e o desempate declarado é pelo método mais simples. O limiar T de Otsu de cada imagem é registrado como diagnóstico de iluminação, como pede a receita da Apostila 02 |
 | 6 | Morfologia | Abertura, fechamento e preenchimento | A abertura remove ruído. O fechamento é a operação essencial: a placa de regulamentação é uma orla vermelha em torno de um miolo branco e, sem fechá-la, o `findContours` devolveria um anel, com área e centroide errados |
 | 7 | Contornos | `findContours(RETR_EXTERNAL)` sobre a máscara morfológica | Nunca sobre a saída do Canny, porque uma borda de um pixel tem dois lados e duplicaria a contagem |
 | 8 | Filtros | Área mínima e máxima, razão de aspecto, extensão e solidez | O piso remove ruído. O teto é um filtro de escala contra fachadas, toldos e vegetação fotografados de perto, que a forma não separa de uma placa |
@@ -241,10 +254,25 @@ trade-off e escolhe um ponto segundo um critério declarado de antemão.
 
 **Método de limiarização.** O enunciado pede "global, Otsu ou adaptativa, com justificativa
 técnica da escolha". A justificativa aqui é medida: os quatro métodos rodam na mesma grade, na
-mesma amostra de ajuste, e fica o de maior F1. Nesta base venceu a adaptativa. Ela decide o
-corte pela vizinhança de cada pixel e por isso aguenta melhor cenas em que a quantidade de cor
-muda muito de uma região para outra. Na mesma grade, com um único T para a imagem toda, o Otsu
-clássico ficou 0,014 de F1 abaixo dela e o Otsu restrito, 0,027.
+mesma amostra de ajuste. O resultado é um empate:
+
+| Método | Melhor F1 no ajuste |
+|---|---|
+| global | 0,120 |
+| adaptativa | 0,120 |
+| otsu_restrito | 0,117 |
+| otsu | 0,116 |
+
+Os quatro cabem dentro de 0,005 de F1, que é menos do que o ruído de uma amostra de 250
+imagens. Deixar o vencedor sair da ordem em que a tabela foi montada seria sorte, então o
+desempate é declarado de antemão: **entre métodos empatados fica o mais simples**, e a lista
+`METODOS_LIMIAR` está escrita do mais simples para o mais complexo. Isso adota a limiarização
+global, com o corte escolhido no estágio 1b.
+
+O custo dessa escolha fica registrado: um corte fixo funciona nesta base, mas não é
+transferível. Nas fotos que a equipe vai tirar, com outra câmera e outra luz, o valor precisa
+ser recalibrado, enquanto Otsu e adaptativa se ajustam sozinhos. É a primeira coisa a refazer
+ao trocar de fonte de imagem.
 
 **O T da Apostila.** A receita da Apostila 02 imprime o limiar T de cada imagem, porque esse
 número entra no relatório e mostra quando a iluminação muda muito entre imagens. A adaptativa
@@ -260,12 +288,21 @@ da figura inscrita.
 A busca tem três estágios, no formato de busca por coordenadas. O estágio 0 percorre as portas
 de saturação das faixas vermelha (60, 80, 100 e 120) e amarela (130, 150 e 170), com piso e método
 provisórios. O estágio 1 percorre `q` de 0,05 a 0,60 combinado com os quatro métodos de
-limiarização, e a combinação de maior F1 define o método e o piso. O estágio 2, já com o
-vencedor fixado, varre o teto de área em `q` igual a 0,90, 0,95, 0,99 e sem teto.
+limiarização, e a combinação de maior F1 define o método e o piso. O estágio 1b ajusta os
+parâmetros internos do método vencedor: o corte (64, 96 e 128) no caso do global, ou a janela
+(31, 51 e 71 px) e o `C` (−5, −10 e −15) no caso da adaptativa. O estágio 2, já com tudo
+fixado, varre o teto de área em `q` igual a 0,90, 0,95, 0,99 e sem teto.
+
+**Duas regras de desempate, declaradas antes de rodar.** Diferenças menores que 0,005 de F1
+cabem no ruído de 250 imagens, e sem uma regra elas seriam decididas pela ordem das linhas.
+Por isso: uma faixa de cor só permanece no pipeline se ganhar do descarte por mais de 0,005, e
+entre métodos empatados nessa mesma margem fica o mais simples. A regra das faixas mudou o
+resultado: o azul ganhava do descarte por 0,001 e colocava nuvem e céu entre as detecções.
 
 **Protocolo anti-viés.** A medição e a grade rodam sobre uma amostra de ajuste, enquanto as
 métricas reportadas na Seção 8 do notebook vêm de uma amostra de validação disjunta, que não
-participa de nenhuma decisão. Sem essa separação, o desempenho publicado seria otimista por
+participa de nenhuma decisão. A divisão é por trecho de gravação, e não por imagem (ver Seção
+4), e a escala usada para derivar kernels e áreas também é medida só no lado de ajuste. Sem essa separação, o desempenho publicado seria otimista por
 construção, já que o parâmetro teria sido escolhido no mesmo conjunto em que é avaliado. A
 ordenação dos arquivos é feita de modo idêntico no Windows e no Linux, para que a mesma semente
 produza as mesmas amostras no Colab e na máquina local.
@@ -286,56 +323,72 @@ Execução de 17/09/2026, semente 42, OpenCV 5.0.0, Python 3.14.4.
 |---|---|---|
 | Largura de trabalho | 640 px | Deixa os parâmetros em pixel comparáveis entre imagens |
 | CLAHE (clip e grade) | 2,0 e 8×8 | Canal `L*` do LAB, preserva a matiz |
-| Suavização | gaussiano 3×3 | `ímpar(0,10 × 13,4) = 3`, mais estreito que a orla da menor placa |
-| Faixas de matiz | vermelho H 10 ± 6 e amarelo H 19 ± 6 | Centro e largura medidos nas anotações, a partir das âncoras do CONTRAN |
-| Portas de saturação | vermelho 100 e amarelo 160 | Estágio 0 da busca em grade, por descida em coordenadas |
-| Faixas descartadas | azul, verde | O verde não reuniu objetos anotados suficientes. O azul foi medido e descartado no estágio 0 |
-| Kernel de abertura | 3×3 | `ímpar(0,10 × 13,4) = 3` |
-| Kernel de fechamento | 7×7 | `ímpar(0,25 × 29,6) = 7` |
-| Método de limiarização | `adaptativa` | Busca por coordenadas em 3 estágios, 50 configurações sobre 250 imagens de ajuste, maior F1 com IoU de no mínimo 0,30. Melhor F1 de cada método: adaptativa 0,131, Otsu 0,117, Otsu restrito 0,104, global 0,088 |
-| `blockSize` da adaptativa | 51 px | Valor fixo, não passou pela busca em grade. A janela é maior que a placa mediana (cerca de 30 px), então a média local inclui fundo |
-| `C` da adaptativa | −10 | Valor fixo, não passou pela busca em grade. Negativo: o pixel precisa ficar 10 níveis acima da média local para virar objeto |
-| Limiar do método global | 96 | Só entra na comparação de métodos. Valor fixo, não calibrado |
-| Limiar T de Otsu (diagnóstico) | recalculado por imagem: média 77,4, desvio 26,0, de 38 a 138 | Otsu restrito sobre o mapa de evidência das 250 imagens de validação. Não entra na segmentação, serve para mostrar o quanto a iluminação muda entre imagens. Uma imagem sem nenhum pixel com evidência de cor fica fora da conta |
-| Área mínima de contorno | 199 px² | Descarta o quantil 0,30 inferior das placas anotadas, multiplicado por 0,45 de preenchimento |
-| Área máxima de contorno | 8.699 px² | Descarta o quantil superior a 0,99, como filtro de escala contra fachadas e vegetação fotografadas de perto |
+| Suavização | gaussiano 3×3 | `ímpar(0,10 × 13,5) = 3`, mais estreito que a orla da menor placa |
+| Faixas de matiz | vermelho H 9 ± 6 e amarelo H 16 ± 6 | Centro e largura medidos nas anotações, a partir das âncoras do CONTRAN |
+| Portas de saturação | vermelho 80 e amarelo 100 | Estágio 0 da busca em grade, por descida em coordenadas |
+| Faixas descartadas | azul, verde | O verde não reuniu objetos anotados suficientes. O azul virou faixa, mas no estágio 0 ganhou do descarte por só 0,001 de F1, abaixo da margem de 0,005, e saiu |
+| Kernel de abertura | 3×3 | `ímpar(0,10 × 13,5) = 3` |
+| Kernel de fechamento | 7×7 | `ímpar(0,25 × 27,1) = 7` |
+| Método de limiarização | `global` | Busca por coordenadas em 4 estágios, 53 configurações sobre 250 imagens de ajuste. Empate técnico entre os quatro métodos (global 0,120, adaptativa 0,120, Otsu restrito 0,117, Otsu 0,116), resolvido pela regra do mais simples |
+| Limiar do método global | 96 | Estágio 1b da busca em grade, entre 64, 96 e 128 |
+| `blockSize` e `C` da adaptativa | 51 px e −10 | Só entram na comparação de métodos. Valores fixos, não calibrados |
+| Limiar T de Otsu (diagnóstico) | recalculado por imagem: média 74,9, desvio 18,1, de 33 a 142 | Otsu restrito sobre o mapa de evidência das 250 imagens de validação. Não entra na segmentação, serve para mostrar o quanto a iluminação muda entre imagens |
+| Área mínima de contorno | 183 px² | Descarta o quantil 0,30 inferior das placas anotadas, multiplicado por 0,45 de preenchimento |
+| Área máxima de contorno | 6.750 px² | Descarta o quantil superior a 0,95, como filtro de escala contra fachadas e vegetação fotografadas de perto |
 | Razão de aspecto aceita | 0,35 a 2,85 | Rejeita postes, faixas e meios-fios |
 | Extensão mínima | 0,35 | Rejeita contornos rendilhados, como vegetação |
 | Solidez mínima | 0,70 | Toda placa normativa é convexa |
 
 **Protocolo de avaliação.** São 250 imagens de ajuste, usadas na escolha dos parâmetros, e 250
-de validação, disjuntas das primeiras, sorteadas com semente fixa. O casamento entre detecção e
-anotação usa IoU de no mínimo 0,30.
+de validação, sorteadas com semente fixa entre trechos de gravação disjuntos: 82 trechos de um
+lado e 97 do outro. O casamento entre detecção e anotação usa IoU de no mínimo 0,30.
 
 **Desempenho da linha de base clássica**, medido na amostra de validação retida, com 250
 imagens:
 
 | Métrica | Valor |
 |---|---|
-| Precisão | 0,082 |
-| Recall | 0,076 |
-| F1 | 0,079 |
-| F1 na amostra de ajuste | 0,134 |
-| Diferença entre ajuste e validação | 0,055 |
-| Erro absoluto médio de contagem | 0,88 objeto por imagem |
-| Contagem exata | 84 de 250 imagens |
+| Precisão | 0,137 |
+| Recall | 0,157 |
+| F1 | 0,146 |
+| F1 na amostra de ajuste | 0,138 |
+| Diferença entre ajuste e validação | −0,008 |
+| Erro absoluto médio de contagem | 0,92 objeto por imagem |
+| Contagem exata | 81 de 250 imagens |
+
+A diferença entre ajuste e validação ficou negativa, ou seja, o resultado na amostra retida
+foi um pouco melhor. Não é erro: com a divisão por trecho, os dois lados têm conteúdo
+diferente e nada garante que o lado retido seja o mais difícil.
+
+**A contagem precisa de referência, e não passa nela.** Das 250 imagens avaliadas, 226 têm
+exatamente uma placa anotada. Quem chutar "1 placa" em toda imagem erra bem menos que o
+pipeline:
+
+| Contagem | Erro absoluto médio | Contagens exatas |
+|---|---|---|
+| Pipeline | 0,92 | 81 de 250 |
+| Chutar sempre 1 placa | **0,12** | **226 de 250** |
+
+A conclusão está no notebook e vale repetir aqui: nesta base o erro de contagem não serve
+para avaliar o pipeline. A leitura que vale é a de detecção, com precisão, recall e F1.
 
 **Limiar T nas imagens de evidência (Seção 7).** Mesmo formato da receita da Apostila 02,
 salvo em `outputs/limiares_por_imagem.csv`. O T é o do Otsu restrito, calculado só como
-diagnóstico; os pixels de objeto são os da máscara final, feita com a adaptativa:
+diagnóstico; os pixels de objeto são os da máscara final:
 
 | Imagem | Limiar de Otsu (T) | Pixels de objeto |
 |---|---|---|
-| captura_2023-09-29_16-19-23 | 64 | 1.093 |
-| captura_2023-10-10_17-49-29 | 117 | 54.871 |
-| captura_2023-10-05_18-19-04 | 80 | 56.311 |
-| captura_2023-09-29_16-19-55 | 56 | 5.422 |
-| captura_2023-10-02_14-58-39 | 66 | 60.029 |
-| captura_2023-09-28_15-41-02 | 100 | 57.772 |
+| captura_2023-09-29_16-19-23 | 53 | 793 |
+| captura_2023-10-10_17-49-29 | 104 | 88.804 |
+| captura_2023-10-05_18-19-04 | 92 | 130.788 |
+| captura_2023-09-29_16-19-55 | 50 | 1.064 |
+| captura_2023-10-02_14-58-39 | 68 | 64.924 |
+| captura_2023-09-28_15-41-02 | 86 | 106.068 |
 
-O T vai de 56 a 117 nessas seis imagens (média 80,5, desvio 23,6). É uma variação grande, e
+O T vai de 50 a 104 nessas seis imagens (média 75,5, desvio 21,9). É uma variação grande, e
 é exatamente o que a Apostila diz que esse número serve para mostrar: a iluminação e a
-quantidade de cor na cena mudam muito entre os quadros da câmera veicular.
+quantidade de cor na cena mudam muito entre os quadros da câmera veicular. Nas 250 imagens
+de validação a variação é ainda maior, de 33 a 142.
 
 Esses números são baixos e a Seção 9 explica por quê, ponto a ponto. Dois fatores pesam mais que
 os demais. O primeiro é a densidade de anotação da base: são 2.305 objetos em 1.973 imagens
@@ -345,9 +398,9 @@ anotada, o que faz o protocolo contar como falso positivo uma detecção correta
 escala: um décimo das placas anotadas tem menos de 14 px de lado equivalente.
 
 **Ressalva medida sobre o pré-processamento.** A ablação mostra que o CLAHE se paga quando há
-suavização, com ganho de 0,031 no F1 com filtro gaussiano e 0,030 com mediana, e que sem
-suavização a correção de iluminação passa a atrapalhar, com perda de 0,011. O gaussiano de 3×3
-foi mantido por ser a melhor combinação medida e por ser etapa exigida pelo Checkpoint 1. A
+suavização gaussiana, com ganho de 0,008 no F1, mas atrapalha junto com a mediana, com perda
+de 0,013. O gaussiano de 3×3 foi mantido por ser a melhor combinação medida e por ser etapa
+exigida pelo Checkpoint 1. A
 tabela completa está em `outputs/ablacao_preprocessamento.csv`.
 
 ---
@@ -424,11 +477,11 @@ modo que nenhuma entrega dependa de uma única pessoa.
    1.973 imagens anotadas, cerca de um por imagem, além de 990 imagens sem anotação nenhuma. As
    cenas costumam ter mais placas visíveis do que anotadas, e cada detecção correta de uma placa
    não anotada entra na conta como falso positivo. O mosaico de detecções mostra o efeito. A
-   precisão de 0,082 é, portanto, um piso, e não uma medida limpa do pipeline.
+   precisão de 0,137 é, portanto, um piso, e não uma medida limpa do pipeline.
 2. **Falsos positivos de mesma cromaticidade.** Lanternas traseiras, veículos vermelhos, toldos,
    solo exposto e grama seca muito saturada compartilham matiz e saturação com as placas. Nesta
-   base o efeito é forte: com porta de saturação em 100, quase metade dos pixels de fundo dentro
-   da faixa vermelha sobrevive, contra menos de um décimo em bases de melhor qualidade
+   base o efeito é forte: com a porta de saturação em 80, mais da metade dos pixels de fundo
+   dentro da faixa vermelha sobrevive, contra menos de um décimo em bases de melhor qualidade
    fotográfica. São quadros de câmera veicular em estrada de terra e vegetação seca, com as
    mesmas matizes das placas.
 3. **Placas pequenas são o teto do recall.** Um décimo das placas anotadas tem menos de 14 px de
@@ -440,7 +493,7 @@ modo que nenhuma entrega dependa de uma única pessoa.
    saturação e o descarte de faixa são decididos por métrica, e não por hipótese. Nesta execução
    o azul e o verde ficaram de fora, e as placas dessas cores não têm cobertura.
 5. **Círculo e octógono sob perspectiva.** Ficam indistinguíveis por descritor clássico, e o
-   código sinaliza a ambiguidade em vez de arbitrar. Nesta execução 93,7% dos objetos saíram
+   código sinaliza a ambiguidade em vez de arbitrar. Nesta execução 89,4% dos objetos saíram
    marcados como forma ambígua, o que é consequência direta do tamanho dos objetos.
 6. **Placas abaixo da área mínima calibrada** são descartadas por construção. O compromisso é
    explícito e ajustável.
