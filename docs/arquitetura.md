@@ -28,7 +28,7 @@ flowchart TD
 
     subgraph SEG["3 · SEGMENTAÇÃO"]
         C1["Mapa de evidência cromática<br/>HSV · faixas medidas nas anotações<br/>portas S_min escolhidas por métrica"]
-        C2["Limiarização<br/>global | Otsu | Otsu restrito | adaptativa"]
+        C2["Limiarização<br/>Otsu restrito, T por imagem<br/>(global, Otsu e adaptativa só na comparação)"]
         C3["Abertura → fechamento<br/>→ preenchimento de buracos"]
         C1 --> C2 --> C3
     end
