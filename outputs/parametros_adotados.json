@@ -2,11 +2,11 @@
   "projeto": "Sistema Inteligente de Deteccao e Classificacao de Placas de Transito",
   "etapa": "AED 2a Etapa - Checkpoint 1 (N1)",
   "disciplina": "CDI1021 - Visao Computacional (2026/2) - PUC Goias",
-  "gerado_em": "2026-09-10 14:38:59",
+  "gerado_em": "2026-09-17 10:55:21",
   "ambiente": {
     "python": "3.14.4",
     "opencv": "5.0.0",
-    "numpy": "2.3.5",
+    "numpy": "2.5.3",
     "pandas": "3.0.5",
     "semente": 42
   },
@@ -611,6 +611,51 @@
     "area_maxima_px2": 8699,
     "f1_na_amostra_de_ajuste": 0.134,
     "criterio": "busca por coordenadas em 3 estagios, 50 configuracoes sobre 250 imagens de ajuste, maior F1 com IoU >= 0.30",
+    "limiar_T_diagnostico": "T do Otsu restrito calculado sobre o mapa de evidencia de cada imagem; nao entra na segmentacao, que usa o metodo escolhido acima",
+    "valores_fixos_nao_calibrados": {
+      "limiar_global": 96,
+      "adapt_bloco": 51,
+      "adapt_c": -10,
+      "observacao": "a busca em grade escolhe o metodo de limiarizacao, mas nao ajusta estes valores; sao fixos desde a primeira versao"
+    },
+    "limiares_por_imagem_evidencia": [
+      {
+        "imagem": "captura_2023-09-29_16-19-23_png.rf.5166ee728cc6c7306aee8f6a732419fe.jpg",
+        "limiar_T": 64.0,
+        "pixels_objeto": 1093,
+        "objetos": 1
+      },
+      {
+        "imagem": "captura_2023-10-10_17-49-29_png.rf.c1ed677abc9b90fa14470603a7ebf3c7.jpg",
+        "limiar_T": 117.0,
+        "pixels_objeto": 54871,
+        "objetos": 0
+      },
+      {
+        "imagem": "captura_2023-10-05_18-19-04_png.rf.8660d9c3f0e9d53cd457e5187d8bbe52.jpg",
+        "limiar_T": 80.0,
+        "pixels_objeto": 56311,
+        "objetos": 1
+      },
+      {
+        "imagem": "captura_2023-09-29_16-19-55_png.rf.8182a56b81db4a23dbc2e4c231c3b7b8.jpg",
+        "limiar_T": 56.0,
+        "pixels_objeto": 5422,
+        "objetos": 3
+      },
+      {
+        "imagem": "captura_2023-10-02_14-58-39_png.rf.97fef327d1a5170cc172d3fd7f6b69be.jpg",
+        "limiar_T": 66.0,
+        "pixels_objeto": 60029,
+        "objetos": 4
+      },
+      {
+        "imagem": "captura_2023-09-28_15-41-02_png.rf.a330d66a9714e7410969aff11771d9fb.jpg",
+        "limiar_T": 100.0,
+        "pixels_objeto": 57772,
+        "objetos": 2
+      }
+    ],
     "grade": [
       {
         "estagio": 0,
@@ -630,7 +675,7 @@
         "fn": 255,
         "limiar_medio": 74.7,
         "limiar_desvio": 23.2,
-        "ms_por_imagem": 81.7
+        "ms_por_imagem": 25.3
       },
       {
         "estagio": 0,
@@ -650,7 +695,7 @@
         "fn": 255,
         "limiar_medio": 83.8,
         "limiar_desvio": 27.9,
-        "ms_por_imagem": 75.5
+        "ms_por_imagem": 26.0
       },
       {
         "estagio": 0,
@@ -670,7 +715,7 @@
         "fn": 259,
         "limiar_medio": 96.7,
         "limiar_desvio": 29.9,
-        "ms_por_imagem": 70.2
+        "ms_por_imagem": 27.2
       },
       {
         "estagio": 0,
@@ -690,7 +735,7 @@
         "fn": 262,
         "limiar_medio": 100.6,
         "limiar_desvio": 29.0,
-        "ms_por_imagem": 73.5
+        "ms_por_imagem": 29.0
       },
       {
         "estagio": 0,
@@ -710,7 +755,7 @@
         "fn": 265,
         "limiar_medio": 102.8,
         "limiar_desvio": 28.7,
-        "ms_por_imagem": 72.7
+        "ms_por_imagem": 30.6
       },
       {
         "estagio": 0,
@@ -730,7 +775,7 @@
         "fn": 265,
         "limiar_medio": 105.3,
         "limiar_desvio": 29.0,
-        "ms_por_imagem": 25.4
+        "ms_por_imagem": 24.9
       },
       {
         "estagio": 0,
@@ -750,7 +795,7 @@
         "fn": 253,
         "limiar_medio": 89.0,
         "limiar_desvio": 29.3,
-        "ms_por_imagem": 32.2
+        "ms_por_imagem": 30.3
       },
       {
         "estagio": 0,
@@ -770,7 +815,7 @@
         "fn": 255,
         "limiar_medio": 91.2,
         "limiar_desvio": 31.5,
-        "ms_por_imagem": 30.5
+        "ms_por_imagem": 30.1
       },
       {
         "estagio": 0,
@@ -790,7 +835,7 @@
         "fn": 257,
         "limiar_medio": 80.4,
         "limiar_desvio": 25.5,
-        "ms_por_imagem": 28.6
+        "ms_por_imagem": 28.5
       },
       {
         "estagio": 0,
@@ -810,7 +855,7 @@
         "fn": 256,
         "limiar_medio": 79.0,
         "limiar_desvio": 26.9,
-        "ms_por_imagem": 28.8
+        "ms_por_imagem": 31.1
       },
       {
         "estagio": 0,
@@ -830,7 +875,7 @@
         "fn": 254,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.1,
-        "ms_por_imagem": 29.0
+        "ms_por_imagem": 30.9
       },
       {
         "estagio": 0,
@@ -850,7 +895,7 @@
         "fn": 252,
         "limiar_medio": 61.0,
         "limiar_desvio": 17.8,
-        "ms_por_imagem": 23.8
+        "ms_por_imagem": 23.4
       },
       {
         "estagio": 0,
@@ -870,7 +915,7 @@
         "fn": 251,
         "limiar_medio": 77.1,
         "limiar_desvio": 29.7,
-        "ms_por_imagem": 29.2
+        "ms_por_imagem": 33.6
       },
       {
         "estagio": 0,
@@ -890,7 +935,7 @@
         "fn": 252,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 31.9
+        "ms_por_imagem": 34.6
       },
       {
         "estagio": 0,
@@ -910,7 +955,7 @@
         "fn": 253,
         "limiar_medio": 76.5,
         "limiar_desvio": 28.7,
-        "ms_por_imagem": 56.1
+        "ms_por_imagem": 32.0
       },
       {
         "estagio": 0,
@@ -930,7 +975,7 @@
         "fn": 253,
         "limiar_medio": 76.8,
         "limiar_desvio": 29.0,
-        "ms_por_imagem": 42.7
+        "ms_por_imagem": 27.7
       },
       {
         "estagio": 0,
@@ -950,7 +995,7 @@
         "fn": 253,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.1,
-        "ms_por_imagem": 31.6
+        "ms_por_imagem": 27.3
       },
       {
         "estagio": 0,
@@ -970,7 +1015,7 @@
         "fn": 253,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 26.3
+        "ms_por_imagem": 21.4
       },
       {
         "estagio": 1,
@@ -990,7 +1035,7 @@
         "fn": 255,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 23.6
+        "ms_por_imagem": 20.2
       },
       {
         "estagio": 1,
@@ -1010,7 +1055,7 @@
         "fn": 241,
         "limiar_medio": 47.8,
         "limiar_desvio": 10.6,
-        "ms_por_imagem": 24.1
+        "ms_por_imagem": 20.6
       },
       {
         "estagio": 1,
@@ -1030,7 +1075,7 @@
         "fn": 245,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 27.4
+        "ms_por_imagem": 21.6
       },
       {
         "estagio": 1,
@@ -1050,7 +1095,7 @@
         "fn": 240,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 26.2
+        "ms_por_imagem": 23.4
       },
       {
         "estagio": 1,
@@ -1070,7 +1115,7 @@
         "fn": 256,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 20.9
+        "ms_por_imagem": 20.0
       },
       {
         "estagio": 1,
@@ -1090,7 +1135,7 @@
         "fn": 241,
         "limiar_medio": 47.8,
         "limiar_desvio": 10.6,
-        "ms_por_imagem": 22.7
+        "ms_por_imagem": 20.3
       },
       {
         "estagio": 1,
@@ -1110,7 +1155,7 @@
         "fn": 246,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 22.9
+        "ms_por_imagem": 21.5
       },
       {
         "estagio": 1,
@@ -1130,7 +1175,7 @@
         "fn": 241,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 25.2
+        "ms_por_imagem": 23.3
       },
       {
         "estagio": 1,
@@ -1150,7 +1195,7 @@
         "fn": 257,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 21.5
+        "ms_por_imagem": 20.0
       },
       {
         "estagio": 1,
@@ -1170,7 +1215,7 @@
         "fn": 244,
         "limiar_medio": 47.8,
         "limiar_desvio": 10.6,
-        "ms_por_imagem": 21.3
+        "ms_por_imagem": 20.2
       },
       {
         "estagio": 1,
@@ -1190,7 +1235,7 @@
         "fn": 250,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 24.0
+        "ms_por_imagem": 21.6
       },
       {
         "estagio": 1,
@@ -1210,7 +1255,7 @@
         "fn": 243,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 24.3
+        "ms_por_imagem": 23.1
       },
       {
         "estagio": 1,
@@ -1230,7 +1275,7 @@
         "fn": 260,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 22.1
+        "ms_por_imagem": 19.9
       },
       {
         "estagio": 1,
@@ -1250,7 +1295,7 @@
         "fn": 248,
         "limiar_medio": 47.8,
         "limiar_desvio": 10.6,
-        "ms_por_imagem": 21.8
+        "ms_por_imagem": 20.2
       },
       {
         "estagio": 1,
@@ -1270,7 +1315,7 @@
         "fn": 253,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 23.6
+        "ms_por_imagem": 21.3
       },
       {
         "estagio": 1,
@@ -1290,7 +1335,7 @@
         "fn": 249,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 24.5
+        "ms_por_imagem": 23.0
       },
       {
         "estagio": 1,
@@ -1310,7 +1355,7 @@
         "fn": 260,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 22.3
+        "ms_por_imagem": 19.9
       },
       {
         "estagio": 1,
@@ -1330,7 +1375,7 @@
         "fn": 254,
         "limiar_medio": 47.8,
         "limiar_desvio": 10.6,
-        "ms_por_imagem": 22.3
+        "ms_por_imagem": 20.3
       },
       {
         "estagio": 1,
@@ -1350,7 +1395,7 @@
         "fn": 260,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 23.6
+        "ms_por_imagem": 21.4
       },
       {
         "estagio": 1,
@@ -1370,7 +1415,7 @@
         "fn": 256,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 27.5
+        "ms_por_imagem": 22.9
       },
       {
         "estagio": 1,
@@ -1390,7 +1435,7 @@
         "fn": 266,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 23.0
+        "ms_por_imagem": 19.8
       },
       {
         "estagio": 1,
@@ -1410,7 +1455,7 @@
         "fn": 256,
         "limiar_medio": 47.8,
         "limiar_desvio": 10.6,
-        "ms_por_imagem": 23.7
+        "ms_por_imagem": 20.1
       },
       {
         "estagio": 1,
@@ -1430,7 +1475,7 @@
         "fn": 264,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 25.1
+        "ms_por_imagem": 21.3
       },
       {
         "estagio": 1,
@@ -1450,7 +1495,7 @@
         "fn": 260,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 27.2
+        "ms_por_imagem": 22.6
       },
       {
         "estagio": 1,
@@ -1470,7 +1515,7 @@
         "fn": 267,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 21.5
+        "ms_por_imagem": 19.8
       },
       {
         "estagio": 1,
@@ -1490,7 +1535,7 @@
         "fn": 259,
         "limiar_medio": 47.8,
         "limiar_desvio": 10.6,
-        "ms_por_imagem": 22.2
+        "ms_por_imagem": 20.5
       },
       {
         "estagio": 1,
@@ -1510,7 +1555,7 @@
         "fn": 266,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 23.9
+        "ms_por_imagem": 21.5
       },
       {
         "estagio": 1,
@@ -1530,7 +1575,7 @@
         "fn": 263,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 25.6
+        "ms_por_imagem": 22.8
       },
       {
         "estagio": 2,
@@ -1550,7 +1595,7 @@
         "fn": 250,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 53.1
+        "ms_por_imagem": 22.7
       },
       {
         "estagio": 2,
@@ -1570,7 +1615,7 @@
         "fn": 250,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 53.3
+        "ms_por_imagem": 22.9
       },
       {
         "estagio": 2,
@@ -1590,7 +1635,7 @@
         "fn": 249,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 38.8
+        "ms_por_imagem": 22.9
       },
       {
         "estagio": 2,
@@ -1610,7 +1655,7 @@
         "fn": 249,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 56.9
+        "ms_por_imagem": 23.1
       }
     ],
     "melhor_por_metodo": [
@@ -1630,7 +1675,7 @@
         "fn": 249,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 24.5
+        "ms_por_imagem": 23.0
       },
       {
         "metodo": "otsu",
@@ -1648,7 +1693,7 @@
         "fn": 248,
         "limiar_medio": 47.8,
         "limiar_desvio": 10.6,
-        "ms_por_imagem": 21.8
+        "ms_por_imagem": 20.2
       },
       {
         "metodo": "otsu_restrito",
@@ -1666,7 +1711,7 @@
         "fn": 253,
         "limiar_medio": 76.7,
         "limiar_desvio": 29.2,
-        "ms_por_imagem": 23.6
+        "ms_por_imagem": 21.3
       },
       {
         "metodo": "global",
@@ -1684,7 +1729,7 @@
         "fn": 260,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 22.3
+        "ms_por_imagem": 19.9
       }
     ]
   },
@@ -1700,7 +1745,7 @@
       "fn": 249,
       "limiar_medio": null,
       "limiar_desvio": null,
-      "ms_por_imagem": 54.8
+      "ms_por_imagem": 33.0
     },
     {
       "clahe": true,
@@ -1713,7 +1758,7 @@
       "fn": 251,
       "limiar_medio": null,
       "limiar_desvio": null,
-      "ms_por_imagem": 53.8
+      "ms_por_imagem": 29.6
     },
     {
       "clahe": false,
@@ -1726,7 +1771,7 @@
       "fn": 248,
       "limiar_medio": null,
       "limiar_desvio": null,
-      "ms_por_imagem": 52.0
+      "ms_por_imagem": 27.0
     },
     {
       "clahe": true,
@@ -1739,7 +1784,7 @@
       "fn": 256,
       "limiar_medio": null,
       "limiar_desvio": null,
-      "ms_por_imagem": 53.4
+      "ms_por_imagem": 32.7
     },
     {
       "clahe": false,
@@ -1752,7 +1797,7 @@
       "fn": 253,
       "limiar_medio": null,
       "limiar_desvio": null,
-      "ms_por_imagem": 48.8
+      "ms_por_imagem": 31.9
     },
     {
       "clahe": false,
@@ -1765,7 +1810,7 @@
       "fn": 253,
       "limiar_medio": null,
       "limiar_desvio": null,
-      "ms_por_imagem": 25.5
+      "ms_por_imagem": 26.5
     }
   ],
   "conclusoes_ablacao": {
@@ -1793,6 +1838,11 @@
     "limiar_iou": 0.3,
     "erro_absoluto_medio_contagem": 0.88,
     "imagens_com_contagem_exata": 84,
+    "limiar_T_medio": 77.4,
+    "limiar_T_desvio": 26.0,
+    "limiar_T_minimo": 38.0,
+    "limiar_T_maximo": 138.0,
+    "imagens_sem_evidencia_cromatica": 1,
     "f1_na_amostra_de_ajuste": 0.134,
     "diferenca_ajuste_validacao": 0.055
   }

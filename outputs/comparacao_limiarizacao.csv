@@ -1,5 +1,5 @@
 metodo,estagio,portas,quantil_area_min,area_minima,quantil_area_max,area_maxima,precisao,recall,f1,vp,fp,fn,limiar_medio,limiar_desvio,ms_por_imagem
-adaptativa,1,vermelho=100;amarelo=160;azul=None,0.3,199,1.0,0,0.132,0.129,0.131,37,244,249,,,24.5
-otsu,1,vermelho=100;amarelo=160;azul=None,0.3,199,1.0,0,0.105,0.133,0.117,38,325,248,47.8,10.6,21.8
-otsu_restrito,1,vermelho=100;amarelo=160;azul=None,0.3,199,1.0,0,0.094,0.115,0.104,33,317,253,76.7,29.2,23.6
-global,1,vermelho=100;amarelo=160;azul=None,0.4,283,1.0,0,0.085,0.091,0.088,26,279,260,96.0,0.0,22.3
+adaptativa,1,vermelho=100;amarelo=160;azul=None,0.3,199,1.0,0,0.132,0.129,0.131,37,244,249,,,23.0
+otsu,1,vermelho=100;amarelo=160;azul=None,0.3,199,1.0,0,0.105,0.133,0.117,38,325,248,47.8,10.6,20.2
+otsu_restrito,1,vermelho=100;amarelo=160;azul=None,0.3,199,1.0,0,0.094,0.115,0.104,33,317,253,76.7,29.2,21.3
+global,1,vermelho=100;amarelo=160;azul=None,0.4,283,1.0,0,0.085,0.091,0.088,26,279,260,96.0,0.0,19.9

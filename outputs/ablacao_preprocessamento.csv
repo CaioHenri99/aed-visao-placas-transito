@@ -1,7 +1,7 @@
 clahe,suavizacao,precisao,recall,f1,vp,fp,fn,limiar_medio,limiar_desvio,ms_por_imagem
-True,gaussiano,0.139,0.129,0.134,37,230,249,,,54.8
-True,mediana,0.141,0.122,0.131,35,214,251,,,53.8
-False,nenhuma,0.119,0.133,0.125,38,282,248,,,52.0
-True,nenhuma,0.124,0.105,0.114,30,211,256,,,53.4
-False,gaussiano,0.093,0.115,0.103,33,323,253,,,48.8
-False,mediana,0.09,0.115,0.101,33,333,253,,,25.5
+True,gaussiano,0.139,0.129,0.134,37,230,249,,,33.0
+True,mediana,0.141,0.122,0.131,35,214,251,,,29.6
+False,nenhuma,0.119,0.133,0.125,38,282,248,,,27.0
+True,nenhuma,0.124,0.105,0.114,30,211,256,,,32.7
+False,gaussiano,0.093,0.115,0.103,33,323,253,,,31.9
+False,mediana,0.09,0.115,0.101,33,333,253,,,26.5
