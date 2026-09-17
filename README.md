@@ -465,9 +465,9 @@ modo que nenhuma entrega dependa de uma única pessoa.
 | # | Integrante | Matrícula | Responsabilidade principal | Seções do notebook |
 |---|---|---|---|---|
 | 1 | Caio Henrique | 20241013700250 | Aquisição e curadoria do dataset, organização dos diretórios, inventário das imagens e versionamento no Git | 1 e 2 |
-| 2 | Fernanda Andrade | _a preencher_ | Pré-processamento: conversão de espaços de cor, correção de iluminação, filtragem espacial e análise de histograma | 3.2 a 3.5 e 6.1 |
-| 3 | Alisson Leonardo | _a preencher_ | Segmentação por cor e limiarização, operações morfológicas e extração de contornos | 3.6 a 3.8 e 6 |
-| 4 | Vitor Manoel | _a preencher_ | Descritores geométricos, relatório técnico, figuras comparativas, README e documentação de reprodução | 3.8, 7 a 11 |
+| 2 | Fernanda Andrade | 20241013700048 | Pré-processamento: conversão de espaços de cor, correção de iluminação, filtragem espacial e análise de histograma | 3.2 a 3.5 e 6.1 |
+| 3 | Alisson Leonardo | 20241013700170 | Segmentação por cor e limiarização, operações morfológicas e extração de contornos | 3.6 a 3.8 e 6 |
+| 4 | Vitor Manoel | 20241013700307 | Descritores geométricos, relatório técnico, figuras comparativas, README e documentação de reprodução | 3.8, 7 a 11 |
 
 ---
 
