@@ -202,7 +202,7 @@ imagem → redimensionar → corrigir iluminação → suavizar → mapa de evid
 | 6 | Morfologia | Abertura, fechamento e preenchimento | A abertura remove ruído. O fechamento é a operação essencial: a placa de regulamentação é uma orla vermelha em torno de um miolo branco e, sem fechá-la, o `findContours` devolveria um anel, com área e centroide errados |
 | 7 | Contornos | `findContours(RETR_EXTERNAL)` sobre a máscara morfológica | Nunca sobre a saída do Canny, porque uma borda de um pixel tem dois lados e duplicaria a contagem |
 | 8 | Filtros | Área mínima e máxima, razão de aspecto, extensão e solidez | O piso remove ruído. O teto é um filtro de escala contra fachadas, toldos e vegetação fotografados de perto, que a forma não separa de uma placa |
-| 9 | Descritores | Área, perímetro, centroide, circularidade, solidez, extensão e vértices | Saída numérica que responde ao problema |
+| 9 | Descritores | Área, perímetro, centroide, circularidade, solidez, extensão, razão de aspecto, vértices e os sete momentos de Hu | Saída numérica que responde ao problema. Os momentos de Hu são invariantes a translação, escala e rotação, e descrevem a forma independentemente de a placa estar perto, longe ou inclinada |
 
 ### Classificação geométrica
 
@@ -478,6 +478,13 @@ modo que nenhuma entrega dependa de uma única pessoa.
    cenas costumam ter mais placas visíveis do que anotadas, e cada detecção correta de uma placa
    não anotada entra na conta como falso positivo. O mosaico de detecções mostra o efeito. A
    precisão de 0,137 é, portanto, um piso, e não uma medida limpa do pipeline.
+
+   Um quarto dos objetos anotados é da classe `Del`, os delineadores, que pelo CONTRAN são
+   dispositivos auxiliares e não placas. Seria defensável excluí-los do gabarito, já que o
+   escopo declarado é sinalização vertical, mas medimos antes de decidir: sem eles, o F1 vai
+   de 0,146 para 0,151 e a precisão cai de 0,137 para 0,134, porque só 1 das 44 detecções
+   corretas era um delineador. Como a diferença cabe na mesma margem de 0,005 que usamos para
+   desempatar faixas e métodos, o gabarito foi mantido inteiro.
 2. **Falsos positivos de mesma cromaticidade.** Lanternas traseiras, veículos vermelhos, toldos,
    solo exposto e grama seca muito saturada compartilham matiz e saturação com as placas. Nesta
    base o efeito é forte: com a porta de saturação em 80, mais da metade dos pixels de fundo
