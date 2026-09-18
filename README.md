@@ -374,28 +374,23 @@ para avaliar o pipeline. A leitura que vale é a de detecção, com precisão, r
 
 **Limiar T nas imagens de evidência (Seção 7).** Mesmo formato da receita da Apostila 02,
 salvo em `outputs/limiares_por_imagem.csv`. O T é o do Otsu restrito, calculado só como
-diagnóstico; os pixels de objeto são os da máscara final:
+diagnóstico; os pixels de objeto são os da máscara final. As seis imagens são sorteadas com
+semente fixa entre as do lado de validação:
 
-| Imagem | Limiar de Otsu (T) | Pixels de objeto |
-|---|---|---|
-| captura_2023-09-29_16-19-23 | 53 | 793 |
-| captura_2023-10-10_17-49-29 | 104 | 88.804 |
-| captura_2023-10-05_18-19-04 | 92 | 130.788 |
-| captura_2023-09-29_16-19-55 | 50 | 1.064 |
-| captura_2023-10-02_14-58-39 | 68 | 64.924 |
-| captura_2023-09-28_15-41-02 | 86 | 106.068 |
+| Imagem | Limiar de Otsu (T) | Pixels de objeto | Objetos detectados |
+|---|---|---|---|
+| captura_2023-10-09_13-51-24 | 82 | 149.107 | 2 |
+| captura_2023-10-02_15-19-36 | 84 | 73.039 | 2 |
+| captura_2023-09-28_16-03-07 | 81 | 111.341 | 5 |
+| captura_2023-10-05_15-18-57 | 77 | 94.401 | 1 |
+| captura_2023-10-02_16-06-20 | 58 | 3.165 | 0 |
+| captura_2023-10-05_17-50-33 | 94 | 65.609 | 0 |
 
-O T vai de 50 a 104 nessas seis imagens (média 75,5, desvio 21,9). É uma variação grande, e
-é exatamente o que a Apostila diz que esse número serve para mostrar: a iluminação e a
-quantidade de cor na cena mudam muito entre os quadros da câmera veicular. Nas 250 imagens
-de validação a variação é ainda maior, de 33 a 142.
-
-Esses números são baixos e a Seção 9 explica por quê, ponto a ponto. Dois fatores pesam mais que
-os demais. O primeiro é a densidade de anotação da base: são 2.305 objetos em 1.973 imagens
-anotadas, cerca de um objeto por imagem, e 990 imagens sem anotação nenhuma. As figuras de
-`outputs/figuras/05_mosaico_deteccoes.png` mostram cenas com várias placas visíveis e apenas uma
-anotada, o que faz o protocolo contar como falso positivo uma detecção correta. O segundo é a
-escala: um décimo das placas anotadas tem menos de 14 px de lado equivalente.
+O T vai de 58 a 94 nessas seis imagens (média 79,3, desvio 11,9), e nas 250 de validação a
+variação é bem maior, de 33 a 142. É exatamente o que a Apostila diz que esse número serve
+para mostrar: a iluminação e a quantidade de cor na cena mudam muito entre os quadros. Duas
+das seis imagens não produzem nenhuma detecção, e elas ficam no material de evidência: o
+sorteio é por semente fixa, sem escolher os casos favoráveis.
 
 **Ressalva medida sobre o pré-processamento.** A ablação mostra que o CLAHE se paga quando há
 suavização gaussiana, com ganho de 0,008 no F1, mas atrapalha junto com a mediana, com perda

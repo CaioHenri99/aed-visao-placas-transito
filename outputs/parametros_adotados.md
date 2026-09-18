@@ -1,6 +1,6 @@
 ## Parâmetros adotados
 
-Gerado automaticamente pelo notebook em 2026-09-18 11:10:25 (semente 42, OpenCV 5.0.0, Python 3.14.4).
+Gerado automaticamente pelo notebook em 2026-09-18 11:46:56 (semente 42, OpenCV 5.0.0, Python 3.14.4).
 
 | Parâmetro | Valor | Origem |
 |---|---|---|
