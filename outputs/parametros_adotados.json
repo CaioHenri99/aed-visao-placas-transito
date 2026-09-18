@@ -2,7 +2,7 @@
   "projeto": "Sistema Inteligente de Deteccao e Classificacao de Placas de Transito",
   "etapa": "AED 2a Etapa - Checkpoint 1 (N1)",
   "disciplina": "CDI1021 - Visao Computacional (2026/2) - PUC Goias",
-  "gerado_em": "2026-09-17 16:29:56",
+  "gerado_em": "2026-09-18 11:10:25",
   "ambiente": {
     "python": "3.14.4",
     "opencv": "5.0.0",
@@ -589,7 +589,7 @@
         "fn": 247,
         "limiar_medio": 68.4,
         "limiar_desvio": 17.5,
-        "ms_por_imagem": 75.0,
+        "ms_por_imagem": 30.5,
         "limiar_global": null
       },
       {
@@ -610,7 +610,7 @@
         "fn": 252,
         "limiar_medio": 74.6,
         "limiar_desvio": 17.2,
-        "ms_por_imagem": 79.7,
+        "ms_por_imagem": 26.5,
         "limiar_global": null
       },
       {
@@ -631,7 +631,7 @@
         "fn": 257,
         "limiar_medio": 81.2,
         "limiar_desvio": 20.8,
-        "ms_por_imagem": 80.2,
+        "ms_por_imagem": 24.9,
         "limiar_global": null
       },
       {
@@ -652,7 +652,7 @@
         "fn": 263,
         "limiar_medio": 86.7,
         "limiar_desvio": 26.7,
-        "ms_por_imagem": 66.2,
+        "ms_por_imagem": 26.8,
         "limiar_global": null
       },
       {
@@ -673,7 +673,7 @@
         "fn": 266,
         "limiar_medio": 89.6,
         "limiar_desvio": 27.8,
-        "ms_por_imagem": 69.0,
+        "ms_por_imagem": 26.9,
         "limiar_global": null
       },
       {
@@ -694,7 +694,7 @@
         "fn": 269,
         "limiar_medio": 94.1,
         "limiar_desvio": 29.6,
-        "ms_por_imagem": 54.3,
+        "ms_por_imagem": 22.2,
         "limiar_global": null
       },
       {
@@ -715,7 +715,7 @@
         "fn": 249,
         "limiar_medio": 72.7,
         "limiar_desvio": 23.0,
-        "ms_por_imagem": 68.3,
+        "ms_por_imagem": 27.3,
         "limiar_global": null
       },
       {
@@ -736,7 +736,7 @@
         "fn": 245,
         "limiar_medio": 69.5,
         "limiar_desvio": 19.1,
-        "ms_por_imagem": 70.1,
+        "ms_por_imagem": 27.4,
         "limiar_global": null
       },
       {
@@ -757,7 +757,7 @@
         "fn": 246,
         "limiar_medio": 68.2,
         "limiar_desvio": 19.1,
-        "ms_por_imagem": 62.9,
+        "ms_por_imagem": 27.2,
         "limiar_global": null
       },
       {
@@ -778,7 +778,7 @@
         "fn": 248,
         "limiar_medio": 66.4,
         "limiar_desvio": 23.0,
-        "ms_por_imagem": 67.8,
+        "ms_por_imagem": 27.3,
         "limiar_global": null
       },
       {
@@ -799,7 +799,7 @@
         "fn": 249,
         "limiar_medio": 63.0,
         "limiar_desvio": 24.4,
-        "ms_por_imagem": 60.3,
+        "ms_por_imagem": 27.2,
         "limiar_global": null
       },
       {
@@ -820,7 +820,7 @@
         "fn": 248,
         "limiar_medio": 49.3,
         "limiar_desvio": 11.6,
-        "ms_por_imagem": 37.2,
+        "ms_por_imagem": 22.4,
         "limiar_global": null
       },
       {
@@ -841,7 +841,7 @@
         "fn": 240,
         "limiar_medio": 70.4,
         "limiar_desvio": 20.0,
-        "ms_por_imagem": 67.0,
+        "ms_por_imagem": 27.3,
         "limiar_global": null
       },
       {
@@ -862,7 +862,7 @@
         "fn": 244,
         "limiar_medio": 69.3,
         "limiar_desvio": 19.0,
-        "ms_por_imagem": 66.8,
+        "ms_por_imagem": 27.3,
         "limiar_global": null
       },
       {
@@ -883,7 +883,7 @@
         "fn": 246,
         "limiar_medio": 69.6,
         "limiar_desvio": 19.2,
-        "ms_por_imagem": 66.9,
+        "ms_por_imagem": 28.3,
         "limiar_global": null
       },
       {
@@ -904,7 +904,7 @@
         "fn": 245,
         "limiar_medio": 69.5,
         "limiar_desvio": 19.4,
-        "ms_por_imagem": 67.3,
+        "ms_por_imagem": 28.7,
         "limiar_global": null
       },
       {
@@ -925,7 +925,7 @@
         "fn": 246,
         "limiar_medio": 69.3,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 66.8,
+        "ms_por_imagem": 28.5,
         "limiar_global": null
       },
       {
@@ -946,7 +946,7 @@
         "fn": 246,
         "limiar_medio": 69.2,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 46.4,
+        "ms_por_imagem": 22.8,
         "limiar_global": null
       },
       {
@@ -967,7 +967,7 @@
         "fn": 242,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 39.5,
+        "ms_por_imagem": 20.7,
         "limiar_global": null
       },
       {
@@ -988,7 +988,7 @@
         "fn": 230,
         "limiar_medio": 48.9,
         "limiar_desvio": 11.2,
-        "ms_por_imagem": 43.6,
+        "ms_por_imagem": 21.3,
         "limiar_global": null
       },
       {
@@ -1009,7 +1009,7 @@
         "fn": 230,
         "limiar_medio": 69.2,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 45.9,
+        "ms_por_imagem": 23.2,
         "limiar_global": null
       },
       {
@@ -1030,7 +1030,7 @@
         "fn": 232,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 54.0,
+        "ms_por_imagem": 28.7,
         "limiar_global": null
       },
       {
@@ -1051,7 +1051,7 @@
         "fn": 244,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 41.9,
+        "ms_por_imagem": 24.5,
         "limiar_global": null
       },
       {
@@ -1072,7 +1072,7 @@
         "fn": 234,
         "limiar_medio": 48.9,
         "limiar_desvio": 11.2,
-        "ms_por_imagem": 41.8,
+        "ms_por_imagem": 30.9,
         "limiar_global": null
       },
       {
@@ -1093,7 +1093,7 @@
         "fn": 232,
         "limiar_medio": 69.2,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 49.4,
+        "ms_por_imagem": 56.4,
         "limiar_global": null
       },
       {
@@ -1114,7 +1114,7 @@
         "fn": 235,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 54.8,
+        "ms_por_imagem": 59.1,
         "limiar_global": null
       },
       {
@@ -1135,7 +1135,7 @@
         "fn": 248,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 42.6,
+        "ms_por_imagem": 52.5,
         "limiar_global": null
       },
       {
@@ -1156,7 +1156,7 @@
         "fn": 238,
         "limiar_medio": 48.9,
         "limiar_desvio": 11.2,
-        "ms_por_imagem": 43.9,
+        "ms_por_imagem": 52.1,
         "limiar_global": null
       },
       {
@@ -1177,7 +1177,7 @@
         "fn": 240,
         "limiar_medio": 69.2,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 45.8,
+        "ms_por_imagem": 56.5,
         "limiar_global": null
       },
       {
@@ -1198,7 +1198,7 @@
         "fn": 239,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 53.8,
+        "ms_por_imagem": 61.7,
         "limiar_global": null
       },
       {
@@ -1219,7 +1219,7 @@
         "fn": 251,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 42.5,
+        "ms_por_imagem": 42.0,
         "limiar_global": null
       },
       {
@@ -1240,7 +1240,7 @@
         "fn": 248,
         "limiar_medio": 48.9,
         "limiar_desvio": 11.2,
-        "ms_por_imagem": 43.0,
+        "ms_por_imagem": 35.7,
         "limiar_global": null
       },
       {
@@ -1261,7 +1261,7 @@
         "fn": 246,
         "limiar_medio": 69.2,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 46.5,
+        "ms_por_imagem": 24.0,
         "limiar_global": null
       },
       {
@@ -1282,7 +1282,7 @@
         "fn": 248,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 53.5,
+        "ms_por_imagem": 51.3,
         "limiar_global": null
       },
       {
@@ -1303,7 +1303,7 @@
         "fn": 256,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 41.7,
+        "ms_por_imagem": 32.5,
         "limiar_global": null
       },
       {
@@ -1324,7 +1324,7 @@
         "fn": 255,
         "limiar_medio": 48.9,
         "limiar_desvio": 11.2,
-        "ms_por_imagem": 43.0,
+        "ms_por_imagem": 21.0,
         "limiar_global": null
       },
       {
@@ -1345,7 +1345,7 @@
         "fn": 251,
         "limiar_medio": 69.2,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 48.9,
+        "ms_por_imagem": 22.5,
         "limiar_global": null
       },
       {
@@ -1366,7 +1366,7 @@
         "fn": 256,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 57.6,
+        "ms_por_imagem": 23.7,
         "limiar_global": null
       },
       {
@@ -1387,7 +1387,7 @@
         "fn": 262,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 42.0,
+        "ms_por_imagem": 19.9,
         "limiar_global": null
       },
       {
@@ -1408,7 +1408,7 @@
         "fn": 260,
         "limiar_medio": 48.9,
         "limiar_desvio": 11.2,
-        "ms_por_imagem": 43.0,
+        "ms_por_imagem": 20.6,
         "limiar_global": null
       },
       {
@@ -1429,7 +1429,7 @@
         "fn": 256,
         "limiar_medio": 69.2,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 56.2,
+        "ms_por_imagem": 21.8,
         "limiar_global": null
       },
       {
@@ -1450,7 +1450,7 @@
         "fn": 261,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 61.2,
+        "ms_por_imagem": 23.5,
         "limiar_global": null
       },
       {
@@ -1471,7 +1471,7 @@
         "fn": 268,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 43.5,
+        "ms_por_imagem": 19.7,
         "limiar_global": null
       },
       {
@@ -1492,7 +1492,7 @@
         "fn": 267,
         "limiar_medio": 48.9,
         "limiar_desvio": 11.2,
-        "ms_por_imagem": 44.3,
+        "ms_por_imagem": 20.3,
         "limiar_global": null
       },
       {
@@ -1513,7 +1513,7 @@
         "fn": 263,
         "limiar_medio": 69.2,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 42.5,
+        "ms_por_imagem": 21.5,
         "limiar_global": null
       },
       {
@@ -1534,7 +1534,7 @@
         "fn": 267,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 52.6,
+        "ms_por_imagem": 23.2,
         "limiar_global": null
       },
       {
@@ -1555,7 +1555,7 @@
         "fn": 248,
         "limiar_medio": 64.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 42.5,
+        "ms_por_imagem": 20.1,
         "limiar_global": 64.0
       },
       {
@@ -1576,7 +1576,7 @@
         "fn": 251,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 42.0,
+        "ms_por_imagem": 19.9,
         "limiar_global": 96.0
       },
       {
@@ -1597,7 +1597,7 @@
         "fn": 268,
         "limiar_medio": 128.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 42.1,
+        "ms_por_imagem": 19.7,
         "limiar_global": 128.0
       },
       {
@@ -1618,7 +1618,7 @@
         "fn": 255,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 41.6,
+        "ms_por_imagem": 19.8,
         "limiar_global": null
       },
       {
@@ -1639,7 +1639,7 @@
         "fn": 251,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 42.0,
+        "ms_por_imagem": 19.6,
         "limiar_global": null
       },
       {
@@ -1660,7 +1660,7 @@
         "fn": 251,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 41.9,
+        "ms_por_imagem": 19.7,
         "limiar_global": null
       },
       {
@@ -1681,7 +1681,7 @@
         "fn": 251,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 42.0,
+        "ms_por_imagem": 19.9,
         "limiar_global": null
       }
     ],
@@ -1702,7 +1702,7 @@
         "fn": 261,
         "limiar_medio": null,
         "limiar_desvio": null,
-        "ms_por_imagem": 61.2
+        "ms_por_imagem": 23.5
       },
       {
         "metodo": "global",
@@ -1720,7 +1720,7 @@
         "fn": 251,
         "limiar_medio": 96.0,
         "limiar_desvio": 0.0,
-        "ms_por_imagem": 42.5
+        "ms_por_imagem": 42.0
       },
       {
         "metodo": "otsu_restrito",
@@ -1738,7 +1738,7 @@
         "fn": 251,
         "limiar_medio": 69.2,
         "limiar_desvio": 19.5,
-        "ms_por_imagem": 48.9
+        "ms_por_imagem": 22.5
       },
       {
         "metodo": "otsu",
@@ -1756,7 +1756,7 @@
         "fn": 238,
         "limiar_medio": 48.9,
         "limiar_desvio": 11.2,
-        "ms_por_imagem": 43.9
+        "ms_por_imagem": 52.1
       }
     ]
   },
@@ -1772,7 +1772,7 @@
       "fn": 251,
       "limiar_medio": 96.0,
       "limiar_desvio": 0.0,
-      "ms_por_imagem": 42.6
+      "ms_por_imagem": 20.1
     },
     {
       "clahe": true,
@@ -1785,7 +1785,7 @@
       "fn": 255,
       "limiar_medio": 96.0,
       "limiar_desvio": 0.0,
-      "ms_por_imagem": 41.8
+      "ms_por_imagem": 19.8
     },
     {
       "clahe": false,
@@ -1798,7 +1798,7 @@
       "fn": 250,
       "limiar_medio": 96.0,
       "limiar_desvio": 0.0,
-      "ms_por_imagem": 38.1
+      "ms_por_imagem": 17.8
     },
     {
       "clahe": false,
@@ -1811,7 +1811,7 @@
       "fn": 250,
       "limiar_medio": 96.0,
       "limiar_desvio": 0.0,
-      "ms_por_imagem": 38.4
+      "ms_por_imagem": 16.6
     },
     {
       "clahe": false,
@@ -1824,7 +1824,7 @@
       "fn": 252,
       "limiar_medio": 96.0,
       "limiar_desvio": 0.0,
-      "ms_por_imagem": 37.4
+      "ms_por_imagem": 17.9
     },
     {
       "clahe": true,
@@ -1837,7 +1837,7 @@
       "fn": 257,
       "limiar_medio": 96.0,
       "limiar_desvio": 0.0,
-      "ms_por_imagem": 49.0
+      "ms_por_imagem": 19.7
     }
   ],
   "conclusoes_ablacao": {
