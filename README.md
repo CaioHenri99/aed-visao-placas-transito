@@ -114,7 +114,7 @@ aed-visao-placas-transito/
     ├── avaliacao_por_imagem.csv         # VP, FP, FN, erro de contagem e T, imagem a imagem
     ├── descritores_objetos.csv          # saída numérica, um objeto por linha
     ├── distribuicao_formas.csv          # classes geométricas na amostra de validação
-    └── figuras/                         # evidências visuais de antes e depois
+    └── figuras/                         # evidências visuais (JPEG nos painéis de foto, PNG nos gráficos)
 ```
 
 ---
@@ -174,7 +174,7 @@ anotadas, calcula a matiz dominante de cada classe e agrupa as classes em torno 
 normativas do CONTRAN. É assim que se descobre, por exemplo, que `I-4` é verde, que `S-14` e
 `LOC-6` são azuis e que os delineadores da classe `Del` puxam a faixa amarela para o âmbar. As
 faixas do pipeline saem dessa medição, e não de valores fixados à mão. O resultado fica em
-`figuras/00b_calibracao_cromatica.png` e nos recortes de `figuras/00c_recortes_por_faixa.png`.
+`figuras/00b_calibracao_cromatica.png` e nos recortes de `figuras/00c_recortes_por_faixa.jpg`.
 
 ### Considerações éticas
 
@@ -406,11 +406,12 @@ Cada escolha do pipeline tem uma medição por trás, e não uma afirmação.
 
 | Seção | O que mede | Saída |
 |---|---|---|
-| 5.0 | Matiz dominante de cada classe anotada, formação das faixas e separação de placa contra fundo por saturação | `figuras/00b_calibracao_cromatica.png`, `figuras/00c_recortes_por_faixa.png` |
+| 3.2.1 | Histogramas de RGB, tons de cinza e HSV, antes e depois do CLAHE, com o deslocamento de matiz medido | `figuras/00d_histogramas_canais.jpg` |
+| 5.0 | Matiz dominante de cada classe anotada, formação das faixas e separação de placa contra fundo por saturação | `figuras/00b_calibracao_cromatica.png`, `figuras/00c_recortes_por_faixa.jpg` |
 | 5.2 | Grade de portas de saturação, método de limiarização e área, na amostra de ajuste | `busca_em_grade.csv`, `figuras/01_escolha_de_parametros.png` |
 | 6 | Ablação com CLAHE ligado e desligado, combinado com gaussiano, mediana e nenhum filtro | `ablacao_preprocessamento.csv`, `figuras/02_ablacao_preprocessamento.png` |
 | 6.1 | Histograma do mapa de evidência com o corte de cada método sobreposto | `figuras/03_histograma_limiares.png` |
-| 7 | Pipeline etapa a etapa em várias imagens sorteadas com semente fixa | `figuras/04_pipeline_*.png`, `figuras/05_mosaico_deteccoes.png` |
+| 7 | Pipeline etapa a etapa em várias imagens sorteadas com semente fixa | `figuras/04_pipeline_*.jpg`, `figuras/05_mosaico_deteccoes.jpg` |
 | 7 | Limiar T de Otsu (diagnóstico) e pixels de objeto por imagem, como na receita da Apostila 02 | `limiares_por_imagem.csv` |
 | 8 | Precisão, recall, F1, erro de contagem e T por imagem na amostra retida | `avaliacao_por_imagem.csv`, `figuras/07_avaliacao_quantitativa.png` |
 

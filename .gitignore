@@ -33,3 +33,6 @@ desktop.ini
 # A chave da API do Roboflow é pedida em tempo de execução e nunca gravada.
 .env
 *.key
+
+# Material de aula do professor: fica local, nao e redistribuido no repositorio.
+docs/referencias/Apostila*.pdf
