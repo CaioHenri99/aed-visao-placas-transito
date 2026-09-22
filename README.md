@@ -121,9 +121,11 @@ aed-visao-placas-transito/
 
 ## 4. Dataset
 
-A fonte primária é a base [Placas de Trânsito BR (`stefano-tommasini-coelho-euf67/placas-de-transito-br`,
-versão 9)](https://universe.roboflow.com/stefano-tommasini-coelho-euf67/placas-de-transito-br/dataset/9),
-publicada no Roboflow Universe.
+A base de origem é [Placas de Trânsito BR (`stefano-tommasini-coelho-euf67/placas-de-transito-br`)](https://universe.roboflow.com/stefano-tommasini-coelho-euf67/placas-de-transito-br),
+publicada no Roboflow Universe. O notebook consome uma
+[cópia em resolução nativa (`caios-workspace-01wh5/placas-de-transito-br-wq5tp`, versão 1)](https://universe.roboflow.com/caios-workspace-01wh5/placas-de-transito-br-wq5tp/dataset/1),
+gerada pela equipe e também pública, pelo motivo explicado logo abaixo. As imagens e as
+anotações são as mesmas; muda só o pré-processamento da exportação.
 
 É uma base de sinalização vertical brasileira, anotada em caixa delimitadora com os códigos do
 CONTRAN (`A-1a` curva acentuada à esquerda, `R-1` parada obrigatória, `R-19` velocidade máxima,
@@ -136,15 +138,48 @@ pipeline em uma especificação verificável, em vez de tentativa e erro.
 | Imagens | 2.963 (train 2.073, valid 593, test 297) |
 | Objetos anotados | 2.305 |
 | Classes | 68, nomeadas pelos códigos do CONTRAN |
-| Dimensão | 640 × 640 px, padronizada pelo próprio export do Roboflow |
-| Escala do objeto | A placa mediana tem cerca de 28 px de lado equivalente, ou seja, são cenas completas e há de fato segmentação a ser realizada |
+| Dimensão | 1.270 × 636 px na mediana, variando de 1.013 a 1.273 px de largura |
+| Escala do objeto | A placa mediana tem cerca de 37 px de lado equivalente, ou seja, são cenas completas e há de fato segmentação a ser realizada |
 | Formato de anotação | Caixa delimitadora, exportada em YOLO (`classe cx cy w h`, normalizados) |
 | Sem anotação | 990 imagens, excluídas das amostras de ajuste e validação |
 
-**Sobre a padronização em 640 × 640.** O export aplicou redimensionamento por esticamento, sem
-preservar a proporção original. Isso distorce a razão de aspecto dos objetos, e é uma das razões
-para o filtro correspondente do pipeline ser largo. Em compensação, todas as imagens chegam na
-mesma escala, o que torna os parâmetros em pixels diretamente comparáveis entre elas.
+### O esticamento da base original, e por que ele foi desfeito
+
+Todas as nove versões publicadas da base original aplicam o mesmo pré-processamento: *Resize to
+640×640 (Stretch)*. Olhando as imagens de origem no Roboflow, elas medem cerca de 1.270 × 636 px.
+A conta é direta:
+
+| | Original | Export 640 × 640 | Fator |
+|---|---|---|---|
+| Largura | 1.270 | 640 | **× 0,50** |
+| Altura | 636 | 640 | × 1,01 |
+
+Ou seja, **a base publicada está espremida horizontalmente em cerca de 2:1**. Uma placa circular
+vira uma elipse deitada, e um losango vira um losango achatado. Isso tinha dois efeitos medidos
+no nosso pipeline: os descritores de forma (circularidade, extensão, razão de aspecto) descreviam
+a distorção e não a placa, e os objetos ficavam menores do que precisariam ser.
+
+A correção foi refazer a exportação sem o resize, o que exigiu clonar a base para um workspace
+próprio e gerar uma versão nova com apenas *Auto-Orient*. Nada foi reanotado: as caixas são as
+mesmas, reescaladas pelo próprio Roboflow.
+
+**O efeito, medido na mesma amostra de validação retida e sem alterar uma linha do pipeline:**
+
+| | Base esticada (640 × 640) | Base nativa (1.248 px de largura) |
+|---|---|---|
+| Precisão | 0,137 | **0,236** |
+| Recall | 0,157 | **0,175** |
+| F1 | 0,146 | **0,201** |
+| Falsos positivos | 278 | **159** |
+| Placas corretas | 44 de 280 | **49 de 280** |
+| Objetos com forma ambígua | 89,4% | **79,8%** |
+
+A precisão subiu 72% e os falsos positivos caíram 43%. O ganho não veio de um pipeline melhor,
+veio de parar de processar uma imagem deformada: com a proporção correta, os filtros de forma
+voltam a significar o que deveriam, e mancha de terra esticada deixa de passar por placa.
+
+Fica o registro para a 2ª Etapa: treinar um detector sobre a base esticada teria o mesmo
+problema, e sem nenhum aviso.
 
 **Licença.** O `data.yaml` do export declara `license: Public Domain`. Ainda assim, este
 repositório não redistribui as imagens: o notebook as baixa da fonte e o `.gitignore` mantém
@@ -194,7 +229,7 @@ imagem → redimensionar → corrigir iluminação → suavizar → mapa de evid
 
 | # | Etapa | Técnica | Por quê |
 |---|---|---|---|
-| 1 | Entrada | Redimensionamento para 640 px de largura (`INTER_AREA`) | Torna os parâmetros em pixels comparáveis entre imagens de resoluções diferentes |
+| 1 | Entrada | Redimensionamento para 1.248 px de largura (`INTER_AREA`), preservando a proporção | Torna os parâmetros em pixels comparáveis entre imagens de resoluções diferentes. A largura acompanha a resolução nativa da base, porque reduzir encolheria objetos que já são pequenos |
 | 2 | Iluminação | CLAHE no canal `L*` do LAB | Equalizar RGB canal a canal deslocaria a matiz, justamente o atributo em que a segmentação se apoia. No LAB, corrigir `L*` preserva a cor normativa. O *top-hat* fica disponível como alternativa |
 | 3 | Ruído | Filtro gaussiano 3×3, com o kernel derivado da escala da placa | O ruído de alta frequência polui o histograma e desloca o limiar de Otsu. A ordem importa: suavizar vem antes de limiarizar. O kernel precisa ser mais estreito que a orla da menor placa, senão mistura orla e miolo e derruba a saturação |
 | 4 | Evidência | Mapa escalar em HSV, com pesos gaussianos nas matizes vermelha e amarela multiplicados pela saturação, atrás de uma porta mínima de saturação por faixa | Converte a noção de "parece uma placa" em um único canal contínuo, apto à limiarização. Usa distância circular de matiz, porque o vermelho ocupa as duas pontas da escala `H`. A porta de saturação é o que separa placa de grama seca, solo e fachada, e é escolhida por métrica |
@@ -258,10 +293,10 @@ mesma amostra de ajuste. O resultado é um empate:
 
 | Método | Melhor F1 no ajuste |
 |---|---|
-| global | 0,120 |
-| adaptativa | 0,120 |
-| otsu_restrito | 0,117 |
-| otsu | 0,116 |
+| global | 0,184 |
+| otsu_restrito | 0,181 |
+| otsu | 0,180 |
+| adaptativa | 0,179 |
 
 Os quatro cabem dentro de 0,005 de F1, que é menos do que o ruído de uma amostra de 250
 imagens. Deixar o vencedor sair da ordem em que a tabela foi montada seria sorte, então o
@@ -317,24 +352,25 @@ imagem de validação, com média, desvio, mínimo e máximo.
 O bloco abaixo é gerado pela Seção 10 do notebook em `outputs/parametros_adotados.md` e está
 reproduzido aqui. Ao reexecutar, substitua por aquele arquivo.
 
-Execução de 17/09/2026, semente 42, OpenCV 5.0.0, Python 3.14.4.
+Execução de 22/09/2026 sobre a base em resolução nativa, semente 42, OpenCV 5.0.0,
+Python 3.14.4.
 
 | Parâmetro | Valor | Origem |
 |---|---|---|
-| Largura de trabalho | 640 px | Deixa os parâmetros em pixel comparáveis entre imagens |
+| Largura de trabalho | 1.248 px | Resolução nativa da base. Deixa os parâmetros em pixel comparáveis entre imagens |
 | CLAHE (clip e grade) | 2,0 e 8×8 | Canal `L*` do LAB, preserva a matiz |
-| Suavização | gaussiano 3×3 | `ímpar(0,10 × 13,5) = 3`, mais estreito que a orla da menor placa |
-| Faixas de matiz | vermelho H 9 ± 6 e amarelo H 16 ± 6 | Centro e largura medidos nas anotações, a partir das âncoras do CONTRAN |
-| Portas de saturação | vermelho 80 e amarelo 100 | Estágio 0 da busca em grade, por descida em coordenadas |
-| Faixas descartadas | azul, verde | O verde não reuniu objetos anotados suficientes. O azul virou faixa, mas no estágio 0 ganhou do descarte por só 0,001 de F1, abaixo da margem de 0,005, e saiu |
-| Kernel de abertura | 3×3 | `ímpar(0,10 × 13,5) = 3` |
-| Kernel de fechamento | 7×7 | `ímpar(0,25 × 27,1) = 7` |
-| Método de limiarização | `global` | Busca por coordenadas em 4 estágios, 53 configurações sobre 250 imagens de ajuste. Empate técnico entre os quatro métodos (global 0,120, adaptativa 0,120, Otsu restrito 0,117, Otsu 0,116), resolvido pela regra do mais simples |
+| Suavização | gaussiano 3×3 | `ímpar(0,10 × 19,2) = 3`, mais estreito que a orla da menor placa |
+| Faixas de matiz | vermelho H 8 ± 6 e amarelo H 16 ± 6 | Centro e largura medidos nas anotações, a partir das âncoras do CONTRAN |
+| Portas de saturação | vermelho 100 e amarelo 120 | Estágio 0 da busca em grade, por descida em coordenadas |
+| Faixas descartadas | azul, verde | O verde não reuniu objetos anotados suficientes. O azul virou faixa, mas no estágio 0 ficou 0,002 de F1 abaixo do descarte e saiu |
+| Kernel de abertura | 3×3 | `ímpar(0,10 × 19,2) = 3` |
+| Kernel de fechamento | 9×9 | `ímpar(0,25 × 37,5) = 9` |
+| Método de limiarização | `global` | Busca por coordenadas em 4 estágios, 53 configurações sobre 250 imagens de ajuste. Empate técnico entre os quatro métodos (global 0,184, Otsu restrito 0,181, Otsu 0,180, adaptativa 0,179), resolvido pela regra do mais simples |
 | Limiar do método global | 96 | Estágio 1b da busca em grade, entre 64, 96 e 128 |
 | `blockSize` e `C` da adaptativa | 51 px e −10 | Só entram na comparação de métodos. Valores fixos, não calibrados |
-| Limiar T de Otsu (diagnóstico) | recalculado por imagem: média 74,9, desvio 18,1, de 33 a 142 | Otsu restrito sobre o mapa de evidência das 250 imagens de validação. Não entra na segmentação, serve para mostrar o quanto a iluminação muda entre imagens |
-| Área mínima de contorno | 183 px² | Descarta o quantil 0,30 inferior das placas anotadas, multiplicado por 0,45 de preenchimento |
-| Área máxima de contorno | 6.750 px² | Descarta o quantil superior a 0,95, como filtro de escala contra fachadas e vegetação fotografadas de perto |
+| Limiar T de Otsu (diagnóstico) | recalculado por imagem: média 80,1, desvio 16,7, de 37 a 138 | Otsu restrito sobre o mapa de evidência das 250 imagens de validação. Não entra na segmentação, serve para mostrar o quanto a iluminação muda entre imagens |
+| Área mínima de contorno | 479 px² | Descarta o quantil 0,40 inferior das placas anotadas, multiplicado por 0,45 de preenchimento |
+| Área máxima de contorno | 12.887 px² | Descarta o quantil superior a 0,95, como filtro de escala contra fachadas e vegetação fotografadas de perto |
 | Razão de aspecto aceita | 0,35 a 2,85 | Rejeita postes, faixas e meios-fios |
 | Extensão mínima | 0,35 | Rejeita contornos rendilhados, como vegetação |
 | Solidez mínima | 0,70 | Toda placa normativa é convexa |
@@ -348,13 +384,13 @@ imagens:
 
 | Métrica | Valor |
 |---|---|
-| Precisão | 0,137 |
-| Recall | 0,157 |
-| F1 | 0,146 |
-| F1 na amostra de ajuste | 0,138 |
+| Precisão | 0,236 |
+| Recall | 0,175 |
+| F1 | 0,201 |
+| F1 na amostra de ajuste | 0,193 |
 | Diferença entre ajuste e validação | −0,008 |
-| Erro absoluto médio de contagem | 0,92 objeto por imagem |
-| Contagem exata | 81 de 250 imagens |
+| Erro absoluto médio de contagem | 0,87 objeto por imagem |
+| Contagem exata | 75 de 250 imagens |
 
 A diferença entre ajuste e validação ficou negativa, ou seja, o resultado na amostra retida
 foi um pouco melhor. Não é erro: com a divisão por trecho, os dois lados têm conteúdo
@@ -366,7 +402,7 @@ pipeline:
 
 | Contagem | Erro absoluto médio | Contagens exatas |
 |---|---|---|
-| Pipeline | 0,92 | 81 de 250 |
+| Pipeline | 0,87 | 75 de 250 |
 | Chutar sempre 1 placa | **0,12** | **226 de 250** |
 
 A conclusão está no notebook e vale repetir aqui: nesta base o erro de contagem não serve
@@ -379,22 +415,22 @@ semente fixa entre as do lado de validação:
 
 | Imagem | Limiar de Otsu (T) | Pixels de objeto | Objetos detectados |
 |---|---|---|---|
-| captura_2023-10-09_13-51-24 | 82 | 149.107 | 2 |
-| captura_2023-10-02_15-19-36 | 84 | 73.039 | 2 |
-| captura_2023-09-28_16-03-07 | 81 | 111.341 | 5 |
-| captura_2023-10-05_15-18-57 | 77 | 94.401 | 1 |
-| captura_2023-10-02_16-06-20 | 58 | 3.165 | 0 |
-| captura_2023-10-05_17-50-33 | 94 | 65.609 | 0 |
+| captura_2023-10-09_13-51-24 | 90 | 276.204 | 1 |
+| captura_2023-10-02_15-19-36 | 87 | 125.062 | 4 |
+| captura_2023-09-28_16-03-07 | 94 | 137.742 | 2 |
+| captura_2023-10-05_15-18-57 | 89 | 101.264 | 1 |
+| captura_2023-10-02_16-06-20 | 66 | 4.934 | 0 |
+| captura_2023-10-05_17-50-33 | 98 | 90.029 | 0 |
 
-O T vai de 58 a 94 nessas seis imagens (média 79,3, desvio 11,9), e nas 250 de validação a
-variação é bem maior, de 33 a 142. É exatamente o que a Apostila diz que esse número serve
+O T vai de 66 a 98 nessas seis imagens, e nas 250 de validação a variação é bem maior, de
+37 a 138. É exatamente o que a Apostila diz que esse número serve
 para mostrar: a iluminação e a quantidade de cor na cena mudam muito entre os quadros. Duas
 das seis imagens não produzem nenhuma detecção, e elas ficam no material de evidência: o
 sorteio é por semente fixa, sem escolher os casos favoráveis.
 
 **Ressalva medida sobre o pré-processamento.** A ablação mostra que o CLAHE se paga quando há
-suavização gaussiana, com ganho de 0,008 no F1, mas atrapalha junto com a mediana, com perda
-de 0,013. O gaussiano de 3×3 foi mantido por ser a melhor combinação medida e por ser etapa
+suavização gaussiana, com ganho de 0,015 no F1, mas atrapalha junto com a mediana, com perda
+de 0,021. O gaussiano de 3×3 foi mantido por ser a melhor combinação medida e por ser etapa
 exigida pelo Checkpoint 1. A
 tabela completa está em `outputs/ablacao_preprocessamento.csv`.
 
@@ -473,31 +509,34 @@ modo que nenhuma entrega dependa de uma única pessoa.
    1.973 imagens anotadas, cerca de um por imagem, além de 990 imagens sem anotação nenhuma. As
    cenas costumam ter mais placas visíveis do que anotadas, e cada detecção correta de uma placa
    não anotada entra na conta como falso positivo. O mosaico de detecções mostra o efeito. A
-   precisão de 0,137 é, portanto, um piso, e não uma medida limpa do pipeline.
+   precisão de 0,236 é, portanto, um piso, e não uma medida limpa do pipeline.
 
    Um quarto dos objetos anotados é da classe `Del`, os delineadores, que pelo CONTRAN são
    dispositivos auxiliares e não placas. Seria defensável excluí-los do gabarito, já que o
    escopo declarado é sinalização vertical, mas medimos antes de decidir: sem eles, o F1 vai
-   de 0,146 para 0,151 e a precisão cai de 0,137 para 0,134, porque só 1 das 44 detecções
-   corretas era um delineador. Como a diferença cabe na mesma margem de 0,005 que usamos para
-   desempatar faixas e métodos, o gabarito foi mantido inteiro.
+   de 0,201 para 0,202, com o recall subindo de 0,175 para 0,186 e a precisão caindo de 0,236
+   para 0,221. Como a diferença cabe na mesma margem de 0,005 que usamos para desempatar faixas
+   e métodos, o gabarito foi mantido inteiro.
 2. **Falsos positivos de mesma cromaticidade.** Lanternas traseiras, veículos vermelhos, toldos,
    solo exposto e grama seca muito saturada compartilham matiz e saturação com as placas. Nesta
-   base o efeito é forte: com a porta de saturação em 80, mais da metade dos pixels de fundo
+   base o efeito é forte: com a porta de saturação em 100, perto da metade dos pixels de fundo
    dentro da faixa vermelha sobrevive, contra menos de um décimo em bases de melhor qualidade
    fotográfica. São quadros de câmera veicular em estrada de terra e vegetação seca, com as
    mesmas matizes das placas.
-3. **Placas pequenas são o teto do recall.** Um décimo das placas anotadas tem menos de 14 px de
-   lado equivalente, e a orla delas tem 1 px de espessura. Nenhuma combinação de cor e morfologia
-   as recupera, e aumentar a largura de trabalho não ajuda, porque elas já são pequenas na imagem
-   original.
+3. **Placas pequenas são o teto do recall.** Um décimo das placas anotadas tem menos de 19 px de
+   lado equivalente, mesmo na resolução nativa. Foi por isso que a busca subiu o piso de área para
+   o quantil 0,40: abaixo disso o ruído cromático rende mais que a placa. O recall de 0,175 é o
+   número que mais resiste, e ele é limitado pela escala do objeto na cena, não pela calibração.
 4. **Cada faixa de cor carrega um confundidor natural.** O verde disputa a cena com vegetação, o
    azul com o céu, o amarelo com solo exposto, o vermelho com veículos. Por isso a porta de
    saturação e o descarte de faixa são decididos por métrica, e não por hipótese. Nesta execução
    o azul e o verde ficaram de fora, e as placas dessas cores não têm cobertura.
 5. **Círculo e octógono sob perspectiva.** Ficam indistinguíveis por descritor clássico, e o
-   código sinaliza a ambiguidade em vez de arbitrar. Nesta execução 89,4% dos objetos saíram
-   marcados como forma ambígua, o que é consequência direta do tamanho dos objetos.
+   código sinaliza a ambiguidade em vez de arbitrar. Nesta execução 79,8% dos objetos saíram
+   marcados como forma ambígua. Esse número já foi 89,4% na base esticada, e a queda mostra que
+   boa parte do que atribuíamos à perspectiva era, na verdade, a distorção de 2:1 do
+   pré-processamento (ver Seção 4). O que sobra vem de perspectiva real e do tamanho dos objetos:
+   uma placa de 20 px não tem contorno suficiente para separar um círculo de um octógono.
 6. **Placas abaixo da área mínima calibrada** são descartadas por construção. O compromisso é
    explícito e ajustável.
 7. **Desbotamento severo e oclusão.** Reduzem a saturação abaixo da porta mínima ou fragmentam o
