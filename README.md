@@ -2,31 +2,27 @@
 
 AED / Projeto Integrador, 2ª Etapa, Checkpoint 1 (N1)
 
-Pontifícia Universidade Católica de Goiás
-Escola Politécnica e de Artes, Curso de Ciência de Dados e Inteligência Artificial
-Disciplina CDI1021 (Visão Computacional, 2026/2)
+Pontifícia Universidade Católica de Goiás · Escola Politécnica e de Artes
+Ciência de Dados e Inteligência Artificial · CDI1021 Visão Computacional (2026/2)
+Prof. Welington Júlio Dias Rodrigues
 
-- Prof. Welington Júlio Dias Rodrigues
+Pipeline de Processamento Digital de Imagens clássico, sem aprendizado de máquina, que recebe
+uma imagem de via, segmenta as placas de sinalização vertical e extrai contagem, área, centroide,
+caixa envolvente e classe geométrica de cada uma.
+
+A justificativa completa de cada decisão está no
+[relatório técnico](docs/relatorio_tecnico_parcial.pdf) e no próprio notebook. Este README
+cobre o que é preciso para rodar, os parâmetros adotados e os resultados.
 
 ---
 
 ## 1. O problema
 
-A sinalização vertical de trânsito é o principal canal de comunicação entre a via e o
-condutor. O inventário dessas placas e a fiscalização do seu estado de conservação ainda são
-feitos por vistoria manual em campo, um processo lento, amostral e de difícil auditoria em
-malhas urbanas extensas.
-
-A dificuldade técnica não está em identificar o significado da placa, e sim na etapa anterior:
-isolá-la de uma cena visualmente saturada, em que ela concorre com fachadas, vegetação,
-veículos e sinalização publicitária, sob iluminação irregular, contraluz, sombra projetada,
-desbotamento da película refletiva e oclusão parcial.
-
-Este repositório resolve essa etapa anterior com Processamento Digital de Imagens clássico,
-sem aprendizado de máquina. Dada uma imagem de via urbana, o sistema produz uma máscara
-binária estável das placas e dela extrai contagem, área, centroide, caixa envolvente e classe
-geométrica, além do recorte normalizado da região de interesse que vai alimentar o modelo de
-IA da 2ª Etapa.
+O inventário e a fiscalização da sinalização vertical ainda são feitos por vistoria manual em
+campo, um processo lento, amostral e difícil de auditar. A dificuldade técnica está em isolar a
+placa de uma cena saturada (fachadas, vegetação, veículos), sob contraluz, sombra, desbotamento
+e oclusão. Esta etapa resolve essa localização; a identificação do significado da placa fica
+para a 2ª Etapa, com aprendizado profundo.
 
 ---
 
@@ -36,12 +32,12 @@ IA da 2ª Etapa.
 
 1. Abra [`notebooks/checkpoint1_pipeline_pdi.ipynb`](notebooks/checkpoint1_pipeline_pdi.ipynb)
    no Google Colab.
-2. Selecione Runtime e depois Executar tudo (`Ctrl+F9`).
+2. Selecione *Runtime → Executar tudo* (`Ctrl+F9`).
 3. Quando for solicitado, informe sua chave da API do Roboflow. Ela é gratuita e fica em
-   `roboflow.com`, em Settings e depois API Keys.
+   `roboflow.com`, em *Settings → API Keys*.
 
-Não é preciso nenhum outro ajuste manual. A primeira célula instala as dependências e todos os
-parâmetros são calculados a partir do próprio dataset.
+A primeira célula instala as dependências, e todos os parâmetros são calculados a partir do
+próprio dataset. A execução completa leva cerca de 25 minutos.
 
 ### Execução local
 
@@ -57,25 +53,23 @@ pip install -r requirements.txt
 jupyter lab notebooks/checkpoint1_pipeline_pdi.ipynb
 ```
 
-Para não digitar a chave a cada execução, exporte-a como variável de ambiente antes de abrir o
-notebook. Ela nunca é gravada em arquivo:
+Para não digitar a chave a cada execução, defina-a como variável de ambiente. Ela nunca é
+gravada em arquivo:
 
 ```bash
-# Linux/macOS
-export ROBOFLOW_API_KEY="sua-chave"
-# Windows PowerShell
-$env:ROBOFLOW_API_KEY = "sua-chave"
+export ROBOFLOW_API_KEY="sua-chave"          # Linux/macOS
+$env:ROBOFLOW_API_KEY = "sua-chave"          # Windows PowerShell
 ```
 
-### Sem chave da API do Roboflow
+### Sem chave da API
 
-A Seção 1 do notebook oferece três caminhos de aquisição, e basta um deles funcionar.
+A Seção 1 do notebook oferece três caminhos, e basta um funcionar:
 
 | Caminho | Como usar |
 |---|---|
-| A. SDK do Roboflow | É o padrão. Informe a chave quando o notebook pedir. |
-| B. Link direto | Na página do dataset, use Download Dataset, escolha `YOLOv8` e depois *show download code*. Cole a URL em `URL_DOWNLOAD_DIRETO`. |
-| C. Pasta local | Aponte `PASTA_LOCAL` para uma pasta já baixada. É também por aqui que entram as imagens de captura autoral da equipe. |
+| A. SDK do Roboflow | O padrão. Informe a chave quando o notebook pedir |
+| B. Link direto | Em *Download Dataset → YOLOv8 → show download code*, copie a URL para `URL_DOWNLOAD_DIRETO` |
+| C. Pasta local | Aponte `PASTA_LOCAL` para uma pasta já baixada ou com fotos próprias |
 
 ---
 
@@ -83,140 +77,69 @@ A Seção 1 do notebook oferece três caminhos de aquisição, e basta um deles 
 
 ```
 aed-visao-placas-transito/
-├── README.md                       # este arquivo
-├── requirements.txt                # dependências fixadas
-├── .gitignore                      # imagens fora do Git, figuras versionadas
-├── .gitattributes                  # normalização de fim de linha (Windows e Colab)
-├── .github/
-│   └── workflows/validar.yml       # CI: notebook íntegro, sem saídas pesadas e sem chave de API
+├── README.md
+├── requirements.txt
+├── .github/workflows/validar.yml     # CI: notebook íntegro e sem chave de API
 ├── notebooks/
-│   └── checkpoint1_pipeline_pdi.ipynb   # pipeline completo, executável de ponta a ponta
+│   └── checkpoint1_pipeline_pdi.ipynb
 ├── docs/
-│   ├── arquitetura.md                   # diagrama da solução em Mermaid
-│   ├── arquitetura_pipeline.png         # diagrama gerado pelo notebook
-│   └── referencias/
-│       ├── orientacoes-aed-1a-etapa.pdf     # enunciado da disciplina
-│       └── proposta-tema-e-equipe.docx      # documento da 1ª Etapa
-├── data/                           # dataset baixado (não versionado)
-│   └── placas-de-transito-br-9/
-│       ├── data.yaml
-│       ├── train/  images/  labels/
-│       ├── valid/  images/  labels/
-│       └── test/   images/  labels/
-└── outputs/                        # gerado pelo notebook e versionado
-    ├── inventario_dataset.csv           # 1 linha por imagem: split, dimensões, nº de objetos
-    ├── parametros_adotados.json         # registro completo e reprodutível da execução
-    ├── parametros_adotados.md           # tabela pronta para colar na Seção 6 deste README
-    ├── busca_em_grade.csv               # portas de saturação, método e área na amostra de ajuste
-    ├── comparacao_limiarizacao.csv      # melhor configuração de cada método
-    ├── ablacao_preprocessamento.csv     # efeito medido de CLAHE e suavização
-    ├── limiares_por_imagem.csv          # limiar T de Otsu e pixels de objeto, por imagem
-    ├── avaliacao_por_imagem.csv         # VP, FP, FN, erro de contagem e T, imagem a imagem
-    ├── descritores_objetos.csv          # saída numérica, um objeto por linha
-    ├── distribuicao_formas.csv          # classes geométricas na amostra de validação
-    └── figuras/                         # evidências visuais (JPEG nos painéis de foto, PNG nos gráficos)
+│   ├── relatorio_tecnico_parcial.pdf # relatório técnico do PP1
+│   ├── arquitetura.md                # diagrama da solução em Mermaid
+│   ├── arquitetura_pipeline.png      # diagrama gerado pelo notebook
+│   └── referencias/                  # enunciado e proposta da 1ª Etapa
+├── data/                             # dataset baixado pelo notebook (não versionado)
+│   └── placas-de-transito-br-wq5tp-1/
+└── outputs/                          # gerado pelo notebook e versionado
+    ├── parametros_adotados.json      # registro completo e reprodutível da execução
+    ├── parametros_adotados.md        # tabela de parâmetros (reproduzida na Seção 6)
+    ├── inventario_dataset.csv        # uma linha por imagem: split, dimensões, objetos
+    ├── busca_em_grade.csv            # todas as configurações testadas
+    ├── avaliacao_por_imagem.csv      # VP, FP, FN e limiar T, imagem a imagem
+    ├── descritores_objetos.csv       # saída numérica, um objeto por linha
+    └── figuras/                      # evidências visuais
 ```
 
 ---
 
 ## 4. Dataset
 
-A base de origem é [Placas de Trânsito BR (`stefano-tommasini-coelho-euf67/placas-de-transito-br`)](https://universe.roboflow.com/stefano-tommasini-coelho-euf67/placas-de-transito-br),
-publicada no Roboflow Universe. O notebook consome uma
-[cópia em resolução nativa (`caios-workspace-01wh5/placas-de-transito-br-wq5tp`, versão 1)](https://universe.roboflow.com/caios-workspace-01wh5/placas-de-transito-br-wq5tp/dataset/1),
-gerada pela equipe e também pública, pelo motivo explicado logo abaixo. As imagens e as
-anotações são as mesmas; muda só o pré-processamento da exportação.
-
-É uma base de sinalização vertical brasileira, anotada em caixa delimitadora com os códigos do
-CONTRAN (`A-1a` curva acentuada à esquerda, `R-1` parada obrigatória, `R-19` velocidade máxima,
-`I-4` indicação, entre outros). A aderência normativa foi o motivo da escolha: cor, forma e
-proporção das placas são definidas por resolução, o que permite fundamentar cada parâmetro do
-pipeline em uma especificação verificável, em vez de tentativa e erro.
+Base [Placas de Trânsito BR](https://universe.roboflow.com/caios-workspace-01wh5/placas-de-transito-br-wq5tp/dataset/1)
+(Roboflow Universe, *Public Domain*), cópia em resolução nativa da
+[base original](https://universe.roboflow.com/stefano-tommasini-coelho-euf67/placas-de-transito-br).
+São quadros de câmera veicular em rodovias brasileiras, anotados com os códigos do CONTRAN.
 
 | Item | Valor |
 |---|---|
 | Imagens | 2.963 (train 2.073, valid 593, test 297) |
-| Objetos anotados | 2.305 |
-| Classes | 68, nomeadas pelos códigos do CONTRAN |
-| Dimensão | 1.270 × 636 px na mediana, variando de 1.013 a 1.273 px de largura |
-| Escala do objeto | A placa mediana tem cerca de 37 px de lado equivalente, ou seja, são cenas completas e há de fato segmentação a ser realizada |
-| Formato de anotação | Caixa delimitadora, exportada em YOLO (`classe cx cy w h`, normalizados) |
-| Sem anotação | 990 imagens, excluídas das amostras de ajuste e validação |
+| Objetos anotados | 2.305, em 68 classes do CONTRAN |
+| Dimensão | 1.270 × 636 px na mediana |
+| Escala do objeto | placa mediana com cerca de 37 px de lado equivalente |
+| Anotação | caixa delimitadora em YOLO; 990 imagens sem anotação ficam fora da avaliação |
 
-### O esticamento da base original, e por que ele foi desfeito
+**Critério de seleção.** Sinalização brasileira, porque cor, forma e proporção são definidas pelo
+CONTRAN e permitem justificar cada parâmetro por norma. Cenas completas, e não recortes da placa.
 
-Todas as nove versões publicadas da base original aplicam o mesmo pré-processamento: *Resize to
-640×640 (Stretch)*. Olhando as imagens de origem no Roboflow, elas medem cerca de 1.270 × 636 px.
-A conta é direta:
+**A base publicada estava esticada.** Todas as versões da base original aplicam *Resize to
+640×640 (Stretch)* sobre imagens de 1.270 × 636, o que espreme a largura pela metade: placa
+circular vira elipse deitada. Reexportamos sem o resize. Imagens e anotações são as mesmas, e o
+efeito foi medido sem mudar uma linha do pipeline:
 
-| | Original | Export 640 × 640 | Fator |
-|---|---|---|---|
-| Largura | 1.270 | 640 | **× 0,50** |
-| Altura | 636 | 640 | × 1,01 |
-
-Ou seja, **a base publicada está espremida horizontalmente em cerca de 2:1**. Uma placa circular
-vira uma elipse deitada, e um losango vira um losango achatado. Isso tinha dois efeitos medidos
-no nosso pipeline: os descritores de forma (circularidade, extensão, razão de aspecto) descreviam
-a distorção e não a placa, e os objetos ficavam menores do que precisariam ser.
-
-A correção foi refazer a exportação sem o resize, o que exigiu clonar a base para um workspace
-próprio e gerar uma versão nova com apenas *Auto-Orient*. Nada foi reanotado: as caixas são as
-mesmas, reescaladas pelo próprio Roboflow.
-
-**O efeito, medido na mesma amostra de validação retida e sem alterar uma linha do pipeline:**
-
-| | Base esticada (640 × 640) | Base nativa (1.248 px de largura) |
+| Validação retida | Base esticada | Base nativa |
 |---|---|---|
 | Precisão | 0,137 | **0,236** |
-| Recall | 0,157 | **0,175** |
 | F1 | 0,146 | **0,201** |
 | Falsos positivos | 278 | **159** |
-| Placas corretas | 44 de 280 | **49 de 280** |
-| Objetos com forma ambígua | 89,4% | **79,8%** |
+| Formas ambíguas | 89,4% | **79,8%** |
 
-A precisão subiu 72% e os falsos positivos caíram 43%. O ganho não veio de um pipeline melhor,
-veio de parar de processar uma imagem deformada: com a proporção correta, os filtros de forma
-voltam a significar o que deveriam, e mancha de terra esticada deixa de passar por placa.
+**Dois tratamentos na leitura dos dados**, sem remover nada da base:
+1. 5 rótulos vêm como polígono em vez de caixa; o `ler_rotulos` converte para a caixa envolvente.
+2. A divisão entre ajuste e validação é por **trecho de gravação**, e não por imagem, para a
+   mesma placa não aparecer nos dois lados. O quadro de validação mais próximo de um de ajuste
+   está a 31 s.
 
-Fica o registro para a 2ª Etapa: treinar um detector sobre a base esticada teria o mesmo
-problema, e sem nenhum aviso.
-
-**Licença.** O `data.yaml` do export declara `license: Public Domain`. Ainda assim, este
-repositório não redistribui as imagens: o notebook as baixa da fonte e o `.gitignore` mantém
-`data/` fora do versionamento, para não inflar o histórico do Git com dados que já têm um
-endereço estável. O que fica versionado são as figuras derivadas, usadas como evidência do
-checkpoint.
-
-**Dois tratamentos aplicados aos dados.** Nenhum deles remove imagem ou anotação da base,
-os dois corrigem a forma de ler e de dividir:
-
-1. **Rótulos em polígono.** 5 linhas (em 3 arquivos) vêm como polígono, com a classe seguida
-   de pares `x y`, em vez de caixa. Lidas como caixa, viravam placas com 75% da largura da
-   imagem. O `ler_rotulos` agora converte o polígono na caixa que o envolve.
-2. **Divisão por trecho de gravação.** A base são quadros de câmera veicular tirados em média
-   a cada 3 segundos. Sorteando imagem por imagem, a mesma placa vista um segundo depois caía
-   nas duas amostras: 55% das imagens de validação tinham um quadro de ajuste a menos de 30 s.
-   Agora os quadros são agrupados em trechos (um trecho novo começa após 30 s sem captura) e
-   cada trecho vai inteiro para um lado só. O quadro de validação mais próximo de um de ajuste
-   passou a estar a 31 s.
-
-**Sobre os números da tabela.** Eles são gerados pela Seção 2 do notebook, que percorre o
-dataset e grava `outputs/inventario_dataset.csv` com uma linha por imagem. Esse arquivo é a
-documentação da base efetivamente usada, e não a anotação manual reproduzida aqui.
-
-**As cores da base não são assumidas, são medidas.** A Seção 5.0 do notebook percorre as caixas
-anotadas, calcula a matiz dominante de cada classe e agrupa as classes em torno das âncoras
-normativas do CONTRAN. É assim que se descobre, por exemplo, que `I-4` é verde, que `S-14` e
-`LOC-6` são azuis e que os delineadores da classe `Del` puxam a faixa amarela para o âmbar. As
-faixas do pipeline saem dessa medição, e não de valores fixados à mão. O resultado fica em
-`figuras/00b_calibracao_cromatica.png` e nos recortes de `figuras/00c_recortes_por_faixa.jpg`.
-
-### Considerações éticas
-
-A placa de trânsito não constitui, em si, dado pessoal. As imagens de via, no entanto, capturam
-incidentalmente pedestres, rostos e placas de identificação veicular, elementos alcançados pela
-Lei nº 13.709/2018 (LGPD). As imagens de captura própria são anonimizadas antes da publicação no
-repositório, e as bases acadêmicas são utilizadas estritamente nos termos de suas licenças.
+**Licença e ética.** As imagens não são redistribuídas: o notebook baixa da fonte e `data/` fica
+fora do Git. Imagens de via podem conter pessoas e placas de veículo (LGPD); fotos próprias da
+equipe serão anonimizadas antes de publicadas.
 
 ---
 
@@ -227,160 +150,62 @@ imagem → redimensionar → corrigir iluminação → suavizar → mapa de evid
        → limiarizar → morfologia → contornos → descritores
 ```
 
-| # | Etapa | Técnica | Por quê |
-|---|---|---|---|
-| 1 | Entrada | Redimensionamento para 1.248 px de largura (`INTER_AREA`), preservando a proporção | Torna os parâmetros em pixels comparáveis entre imagens de resoluções diferentes. A largura acompanha a resolução nativa da base, porque reduzir encolheria objetos que já são pequenos |
-| 2 | Iluminação | CLAHE no canal `L*` do LAB | Equalizar RGB canal a canal deslocaria a matiz, justamente o atributo em que a segmentação se apoia. No LAB, corrigir `L*` preserva a cor normativa. O *top-hat* fica disponível como alternativa |
-| 3 | Ruído | Filtro gaussiano 3×3, com o kernel derivado da escala da placa | O ruído de alta frequência polui o histograma e desloca o limiar de Otsu. A ordem importa: suavizar vem antes de limiarizar. O kernel precisa ser mais estreito que a orla da menor placa, senão mistura orla e miolo e derruba a saturação |
-| 4 | Evidência | Mapa escalar em HSV, com pesos gaussianos nas matizes vermelha e amarela multiplicados pela saturação, atrás de uma porta mínima de saturação por faixa | Converte a noção de "parece uma placa" em um único canal contínuo, apto à limiarização. Usa distância circular de matiz, porque o vermelho ocupa as duas pontas da escala `H`. A porta de saturação é o que separa placa de grama seca, solo e fachada, e é escolhida por métrica |
-| 5 | Segmentação | Limiarização global, Otsu, Otsu restrito e adaptativa, com a global adotada | A escolha é feita por métrica, conforme a Seção 6. Nesta base os quatro empatam dentro de 0,005 de F1, e o desempate declarado é pelo método mais simples. O limiar T de Otsu de cada imagem é registrado como diagnóstico de iluminação, como pede a receita da Apostila 02 |
-| 6 | Morfologia | Abertura, fechamento e preenchimento | A abertura remove ruído. O fechamento é a operação essencial: a placa de regulamentação é uma orla vermelha em torno de um miolo branco e, sem fechá-la, o `findContours` devolveria um anel, com área e centroide errados |
-| 7 | Contornos | `findContours(RETR_EXTERNAL)` sobre a máscara morfológica | Nunca sobre a saída do Canny, porque uma borda de um pixel tem dois lados e duplicaria a contagem |
-| 8 | Filtros | Área mínima e máxima, razão de aspecto, extensão e solidez | O piso remove ruído. O teto é um filtro de escala contra fachadas, toldos e vegetação fotografados de perto, que a forma não separa de uma placa |
-| 9 | Descritores | Área, perímetro, centroide, circularidade, solidez, extensão, razão de aspecto, vértices e os sete momentos de Hu | Saída numérica que responde ao problema. Os momentos de Hu são invariantes a translação, escala e rotação, e descrevem a forma independentemente de a placa estar perto, longe ou inclinada |
-
-### Classificação geométrica
-
-Os limiares de forma foram obtidos rasterizando cada forma normativa em cinco escalas, com
-raio de 12 a 100 px, e medindo seus descritores.
-
-| Forma | Vértices | Circularidade | Extensão | Área / círculo mínimo |
-|---|---|---|---|---|
-| Triangular (`R-2`, Dê a preferência) | 3 | 0,55 | cerca de 0,50 | não se aplica |
-| Losangular (advertência, `A-*`) | 4 | 0,76 a 0,78 | cerca de 0,50 | não se aplica |
-| Retangular (indicação) | 4 | 0,74 | cerca de 1,00 | não se aplica |
-| Circular (regulamentação) | 5 ou mais | 0,86 a 0,89 | cerca de 0,79 | 0,93 a 0,99 |
-| Octogonal (`R-1`, Pare) | 5 ou mais | 0,95 | cerca de 0,83 | 0,88 a 0,90 |
-
-Essa medição levou a duas decisões de implementação:
-
-- O losango é separado do retângulo pela extensão, e não pelo ângulo do `minAreaRect`. A
-  convenção desse ângulo mudou entre o OpenCV 4 e o 5, e o código quebraria conforme a versão
-  do ambiente.
-- Círculo e octógono só são distinguidos em visada frontal. Sob perspectiva oblíqua nenhum
-  descritor clássico os separa, e nesses casos o objeto recebe a marca `forma_ambigua = True`
-  em vez de um rótulo falsamente confiante.
+| # | Etapa | Técnica |
+|---|---|---|
+| 1 | Entrada | Largura de 1.248 px, preservando a proporção |
+| 2 | Iluminação | CLAHE no canal `L*` do LAB, que corrige a luz sem deslocar a matiz |
+| 3 | Suavização | Gaussiano, antes de limiarizar, para o ruído não deslocar o limiar |
+| 4 | Evidência de cor | Mapa escalar em HSV: proximidade das matizes normativas × saturação |
+| 5 | Limiarização | Global, Otsu, Otsu restrito e adaptativa comparados; global adotada |
+| 6 | Morfologia | Abertura, fechamento e preenchimento de buracos |
+| 7 | Contornos | `findContours(RETR_EXTERNAL)` sobre a máscara, nunca sobre o Canny |
+| 8 | Filtros | Área mínima e máxima, razão de aspecto, extensão e solidez |
+| 9 | Descritores | Área, perímetro, centroide, circularidade, solidez, extensão e momentos de Hu |
 
 ---
 
 ## 6. Parâmetros adotados
 
-Os parâmetros críticos (limiar, tamanho de kernel e área mínima) não são constantes escolhidas
-à mão. A Seção 5 do notebook os obtém em três etapas, porque eles têm naturezas diferentes.
+Nenhum valor foi escolhido por tentativa e erro. Os parâmetros têm três origens:
 
-**5.0. Medição cromática nas anotações.** Antes de qualquer ajuste, o notebook mede, dentro de
-cada faixa de matiz, a saturação dos pixels que são placa (núcleo das caixas anotadas) contra a
-dos pixels de fundo. A tabela resultante mostra, para cada candidato a porta de saturação, que
-fração da placa sobrevive e que fração do fundo sobrevive. A mesma célula mede a matiz das
-classes que o CTB define em azul, e foi essa medição que retirou a faixa azul do pipeline (ver
-Seção 4).
+- **Escala do objeto:** os kernels saem do lado equivalente das placas anotadas.
+- **Histograma:** as faixas de matiz e as portas de saturação saem dos pixels dentro das caixas
+  anotadas, comparados com o fundo.
+- **Busca em grade:** método de limiarização, corte e limites de área são escolhidos por F1
+  numa amostra de ajuste, separada da amostra em que o desempenho é medido.
 
-**5.1. Kernels.** São consequência geométrica da escala do objeto.
+Duas regras de desempate foram declaradas antes de rodar, porque diferenças menores que 0,005
+de F1 cabem no ruído de 250 imagens: uma faixa de cor só fica se ganhar do descarte por mais que
+isso, e entre métodos empatados fica o mais simples. Os quatro métodos de limiarização empataram
+(global 0,184, Otsu restrito 0,181, Otsu 0,180, adaptativa 0,179), e a global foi adotada.
 
-| Parâmetro | Regra de derivação | Justificativa |
-|---|---|---|
-| `suavizacao_k` | `ímpar(0,10 × p10 do lado equivalente da placa)` | O borrão precisa ser mais estreito que a orla da menor placa detectável, senão mistura orla e miolo |
-| `k_abertura` | `ímpar(0,10 × p10 do lado equivalente da placa)` | Precisa apagar ruído sem apagar a menor placa detectável, por isso ancora no percentil 10 e não na mediana |
-| `k_fechamento` | `ímpar(0,25 × mediana do lado equivalente)` | Precisa vencer a espessura do miolo branco de uma placa típica, para que as margens da orla se toquem |
-
-**5.2. Portas de saturação, área mínima e máxima e método de limiarização.** Estes não têm valor correto derivável da
-geometria, porque governam um compromisso entre precisão e recall. O notebook mede a curva de
-trade-off e escolhe um ponto segundo um critério declarado de antemão.
-
-**Método de limiarização.** O enunciado pede "global, Otsu ou adaptativa, com justificativa
-técnica da escolha". A justificativa aqui é medida: os quatro métodos rodam na mesma grade, na
-mesma amostra de ajuste. O resultado é um empate:
-
-| Método | Melhor F1 no ajuste |
-|---|---|
-| global | 0,184 |
-| otsu_restrito | 0,181 |
-| otsu | 0,180 |
-| adaptativa | 0,179 |
-
-Os quatro cabem dentro de 0,005 de F1, que é menos do que o ruído de uma amostra de 250
-imagens. Deixar o vencedor sair da ordem em que a tabela foi montada seria sorte, então o
-desempate é declarado de antemão: **entre métodos empatados fica o mais simples**, e a lista
-`METODOS_LIMIAR` está escrita do mais simples para o mais complexo. Isso adota a limiarização
-global, com o corte escolhido no estágio 1b.
-
-O custo dessa escolha fica registrado: um corte fixo funciona nesta base, mas não é
-transferível. Nas fotos que a equipe vai tirar, com outra câmera e outra luz, o valor precisa
-ser recalibrado, enquanto Otsu e adaptativa se ajustam sozinhos. É a primeira coisa a refazer
-ao trocar de fonte de imagem.
-
-**O T da Apostila.** A receita da Apostila 02 imprime o limiar T de cada imagem, porque esse
-número entra no relatório e mostra quando a iluminação muda muito entre imagens. A adaptativa
-não tem um T único, então o notebook calcula o T do Otsu restrito sobre o mesmo mapa de
-evidência, só como diagnóstico. Ele não entra na segmentação.
-
-Cada candidato a área é expresso como "descartar o quantil `q` das placas anotadas", em vez de
-um número solto de pixels. Assim o parâmetro carrega significado: `q = 0,25` no piso quer dizer
-que o pipeline abre mão do quartil de placas mais distantes, cuja área é comparável à do ruído
-cromático residual. O piso ainda multiplica por 0,45, fator que converte área da caixa em área
-da figura inscrita.
-
-A busca tem três estágios, no formato de busca por coordenadas. O estágio 0 percorre as portas
-de saturação das faixas vermelha (60, 80, 100 e 120) e amarela (130, 150 e 170), com piso e método
-provisórios. O estágio 1 percorre `q` de 0,05 a 0,60 combinado com os quatro métodos de
-limiarização, e a combinação de maior F1 define o método e o piso. O estágio 1b ajusta os
-parâmetros internos do método vencedor: o corte (64, 96 e 128) no caso do global, ou a janela
-(31, 51 e 71 px) e o `C` (−5, −10 e −15) no caso da adaptativa. O estágio 2, já com tudo
-fixado, varre o teto de área em `q` igual a 0,90, 0,95, 0,99 e sem teto.
-
-**Duas regras de desempate, declaradas antes de rodar.** Diferenças menores que 0,005 de F1
-cabem no ruído de 250 imagens, e sem uma regra elas seriam decididas pela ordem das linhas.
-Por isso: uma faixa de cor só permanece no pipeline se ganhar do descarte por mais de 0,005, e
-entre métodos empatados nessa mesma margem fica o mais simples. A regra das faixas mudou o
-resultado: o azul ganhava do descarte por 0,001 e colocava nuvem e céu entre as detecções.
-
-**Protocolo anti-viés.** A medição e a grade rodam sobre uma amostra de ajuste, enquanto as
-métricas reportadas na Seção 8 do notebook vêm de uma amostra de validação disjunta, que não
-participa de nenhuma decisão. A divisão é por trecho de gravação, e não por imagem (ver Seção
-4), e a escala usada para derivar kernels e áreas também é medida só no lado de ajuste. Sem essa separação, o desempenho publicado seria otimista por
-construção, já que o parâmetro teria sido escolhido no mesmo conjunto em que é avaliado. A
-ordenação dos arquivos é feita de modo idêntico no Windows e no Linux, para que a mesma semente
-produza as mesmas amostras no Colab e na máquina local.
-
-O limiar em si não é constante. Na adaptativa ele muda pixel a pixel, e o T de Otsu usado como
-diagnóstico é recalculado por imagem, como na receita da Apostila 02. A Seção 7 do notebook imprime `Limiar de Otsu: T | pixels de objeto: N` para cada
-imagem de evidência e salva em `outputs/limiares_por_imagem.csv`, e a Seção 8 guarda o T de cada
-imagem de validação, com média, desvio, mínimo e máximo.
-
-### Valores da última execução
-
-O bloco abaixo é gerado pela Seção 10 do notebook em `outputs/parametros_adotados.md` e está
-reproduzido aqui. Ao reexecutar, substitua por aquele arquivo.
-
-Execução de 22/09/2026 sobre a base em resolução nativa, semente 42, OpenCV 5.0.0,
-Python 3.14.4.
+Execução de 22/09/2026, semente 42, OpenCV 5.0.0, Python 3.14.4:
 
 | Parâmetro | Valor | Origem |
 |---|---|---|
-| Largura de trabalho | 1.248 px | Resolução nativa da base. Deixa os parâmetros em pixel comparáveis entre imagens |
-| CLAHE (clip e grade) | 2,0 e 8×8 | Canal `L*` do LAB, preserva a matiz |
+| Largura de trabalho | 1.248 px | Resolução nativa da base |
+| CLAHE (clip e grade) | 2,0 e 8×8 | Canal `L*` do LAB |
 | Suavização | gaussiano 3×3 | `ímpar(0,10 × 19,2) = 3`, mais estreito que a orla da menor placa |
-| Faixas de matiz | vermelho H 8 ± 6 e amarelo H 16 ± 6 | Centro e largura medidos nas anotações, a partir das âncoras do CONTRAN |
-| Portas de saturação | vermelho 100 e amarelo 120 | Estágio 0 da busca em grade, por descida em coordenadas |
-| Faixas descartadas | azul, verde | O verde não reuniu objetos anotados suficientes. O azul virou faixa, mas no estágio 0 ficou 0,002 de F1 abaixo do descarte e saiu |
-| Kernel de abertura | 3×3 | `ímpar(0,10 × 19,2) = 3` |
-| Kernel de fechamento | 9×9 | `ímpar(0,25 × 37,5) = 9` |
-| Método de limiarização | `global` | Busca por coordenadas em 4 estágios, 53 configurações sobre 250 imagens de ajuste. Empate técnico entre os quatro métodos (global 0,184, Otsu restrito 0,181, Otsu 0,180, adaptativa 0,179), resolvido pela regra do mais simples |
-| Limiar do método global | 96 | Estágio 1b da busca em grade, entre 64, 96 e 128 |
-| `blockSize` e `C` da adaptativa | 51 px e −10 | Só entram na comparação de métodos. Valores fixos, não calibrados |
-| Limiar T de Otsu (diagnóstico) | recalculado por imagem: média 80,1, desvio 16,7, de 37 a 138 | Otsu restrito sobre o mapa de evidência das 250 imagens de validação. Não entra na segmentação, serve para mostrar o quanto a iluminação muda entre imagens |
-| Área mínima de contorno | 479 px² | Descarta o quantil 0,40 inferior das placas anotadas, multiplicado por 0,45 de preenchimento |
-| Área máxima de contorno | 12.887 px² | Descarta o quantil superior a 0,95, como filtro de escala contra fachadas e vegetação fotografadas de perto |
-| Razão de aspecto aceita | 0,35 a 2,85 | Rejeita postes, faixas e meios-fios |
-| Extensão mínima | 0,35 | Rejeita contornos rendilhados, como vegetação |
-| Solidez mínima | 0,70 | Toda placa normativa é convexa |
+| Faixas de matiz | vermelho H 8 ± 6 e amarelo H 16 ± 6 | Medidas nas anotações, a partir das âncoras do CONTRAN |
+| Portas de saturação | vermelho 100 e amarelo 120 | Estágio 0 da busca em grade |
+| Faixas descartadas | azul e verde | Verde sem objetos suficientes; azul abaixo da margem de desempate |
+| **Kernel de abertura** | **3×3** | `ímpar(0,10 × 19,2) = 3` |
+| **Kernel de fechamento** | **9×9** | `ímpar(0,25 × 37,5) = 9` |
+| Método de limiarização | global | Empate técnico entre os quatro, desempate pelo mais simples |
+| **Limiar** | **96** | Estágio 1b da busca, entre 64, 96 e 128 |
+| Limiar T de Otsu (diagnóstico) | média 80,1, de 37 a 138 | Recalculado por imagem; mostra a variação de iluminação |
+| **Área mínima de contorno** | **479 px²** | Quantil 0,40 das placas anotadas × 0,45 de preenchimento |
+| Área máxima de contorno | 12.887 px² | Quantil 0,95 das placas anotadas |
+| Razão de aspecto, extensão, solidez | 0,35 a 2,85 · 0,35 · 0,70 | Rejeitam poste, vegetação e forma côncava |
 
-**Protocolo de avaliação.** São 250 imagens de ajuste, usadas na escolha dos parâmetros, e 250
-de validação, sorteadas com semente fixa entre trechos de gravação disjuntos: 82 trechos de um
-lado e 97 do outro. O casamento entre detecção e anotação usa IoU de no mínimo 0,30.
+A tabela é gerada pelo notebook em `outputs/parametros_adotados.md`.
 
-**Desempenho da linha de base clássica**, medido na amostra de validação retida, com 250
-imagens:
+---
+
+## 7. Resultados
+
+Medidos em 250 imagens de validação que não participaram de nenhuma escolha de parâmetro,
+com casamento por IoU ≥ 0,30:
 
 | Métrica | Valor |
 |---|---|
@@ -388,182 +213,56 @@ imagens:
 | Recall | 0,175 |
 | F1 | 0,201 |
 | F1 na amostra de ajuste | 0,193 |
-| Diferença entre ajuste e validação | −0,008 |
-| Erro absoluto médio de contagem | 0,87 objeto por imagem |
-| Contagem exata | 75 de 250 imagens |
 
-A diferença entre ajuste e validação ficou negativa, ou seja, o resultado na amostra retida
-foi um pouco melhor. Não é erro: com a divisão por trecho, os dois lados têm conteúdo
-diferente e nada garante que o lado retido seja o mais difícil.
+O desempenho é baixo, e isso é informação: um detector puramente cromático é a linha de base
+contra a qual o modelo treinado da 2ª Etapa será comparado. O erro de contagem (0,87 objeto por
+imagem) não serve de medida nesta base, porque 226 das 250 imagens têm exatamente uma placa
+anotada e chutar sempre "1" erra só 0,12.
 
-**A contagem precisa de referência, e não passa nela.** Das 250 imagens avaliadas, 226 têm
-exatamente uma placa anotada. Quem chutar "1 placa" em toda imagem erra bem menos que o
-pipeline:
-
-| Contagem | Erro absoluto médio | Contagens exatas |
-|---|---|---|
-| Pipeline | 0,87 | 75 de 250 |
-| Chutar sempre 1 placa | **0,12** | **226 de 250** |
-
-A conclusão está no notebook e vale repetir aqui: nesta base o erro de contagem não serve
-para avaliar o pipeline. A leitura que vale é a de detecção, com precisão, recall e F1.
-
-**Limiar T nas imagens de evidência (Seção 7).** Mesmo formato da receita da Apostila 02,
-salvo em `outputs/limiares_por_imagem.csv`. O T é o do Otsu restrito, calculado só como
-diagnóstico; os pixels de objeto são os da máscara final. As seis imagens são sorteadas com
-semente fixa entre as do lado de validação:
-
-| Imagem | Limiar de Otsu (T) | Pixels de objeto | Objetos detectados |
-|---|---|---|---|
-| captura_2023-10-09_13-51-24 | 90 | 276.204 | 1 |
-| captura_2023-10-02_15-19-36 | 87 | 125.062 | 4 |
-| captura_2023-09-28_16-03-07 | 94 | 137.742 | 2 |
-| captura_2023-10-05_15-18-57 | 89 | 101.264 | 1 |
-| captura_2023-10-02_16-06-20 | 66 | 4.934 | 0 |
-| captura_2023-10-05_17-50-33 | 98 | 90.029 | 0 |
-
-O T vai de 66 a 98 nessas seis imagens, e nas 250 de validação a variação é bem maior, de
-37 a 138. É exatamente o que a Apostila diz que esse número serve
-para mostrar: a iluminação e a quantidade de cor na cena mudam muito entre os quadros. Duas
-das seis imagens não produzem nenhuma detecção, e elas ficam no material de evidência: o
-sorteio é por semente fixa, sem escolher os casos favoráveis.
-
-**Ressalva medida sobre o pré-processamento.** A ablação mostra que o CLAHE se paga quando há
-suavização gaussiana, com ganho de 0,015 no F1, mas atrapalha junto com a mediana, com perda
-de 0,021. O gaussiano de 3×3 foi mantido por ser a melhor combinação medida e por ser etapa
-exigida pelo Checkpoint 1. A
-tabela completa está em `outputs/ablacao_preprocessamento.csv`.
-
----
-
-## 7. Como as decisões foram validadas
-
-Cada escolha do pipeline tem uma medição por trás, e não uma afirmação.
-
-| Seção | O que mede | Saída |
-|---|---|---|
-| 3.2.1 | Histogramas de RGB, tons de cinza e HSV, antes e depois do CLAHE, com o deslocamento de matiz medido | `figuras/00d_histogramas_canais.jpg` |
-| 5.0 | Matiz dominante de cada classe anotada, formação das faixas e separação de placa contra fundo por saturação | `figuras/00b_calibracao_cromatica.png`, `figuras/00c_recortes_por_faixa.jpg` |
-| 5.2 | Grade de portas de saturação, método de limiarização e área, na amostra de ajuste | `busca_em_grade.csv`, `figuras/01_escolha_de_parametros.png` |
-| 6 | Ablação com CLAHE ligado e desligado, combinado com gaussiano, mediana e nenhum filtro | `ablacao_preprocessamento.csv`, `figuras/02_ablacao_preprocessamento.png` |
-| 6.1 | Histograma do mapa de evidência com o corte de cada método sobreposto | `figuras/03_histograma_limiares.png` |
-| 7 | Pipeline etapa a etapa em várias imagens sorteadas com semente fixa | `figuras/04_pipeline_*.jpg`, `figuras/05_mosaico_deteccoes.jpg` |
-| 7 | Limiar T de Otsu (diagnóstico) e pixels de objeto por imagem, como na receita da Apostila 02 | `limiares_por_imagem.csv` |
-| 8 | Precisão, recall, F1, erro de contagem e T por imagem na amostra retida | `avaliacao_por_imagem.csv`, `figuras/07_avaliacao_quantitativa.png` |
-
-A ablação existe por um motivo específico: responder com número ao erro mais comum apontado na
-orientação da AED, que é "segmentar sem suavizar antes, e concluir que Otsu não funciona".
-
-### 1° Tentativa
-
-Este caso está registrado porque mudou o pipeline e porque a primeira explicação estava errada.
-
-Uma versão anterior do pipeline trazia uma faixa azul fixa, para as placas de indicação. Em
-imagens de rodovia ela devolvia objetos detectados que eram o céu. Numa delas o maior deles
-ocupava 13,6% da imagem e passava pelo piso de área, pela razão de aspecto, pela extensão e pela
-solidez. A leitura inicial foi que faltava um filtro de escala, e daí veio o teto de área. A
-varredura do teto mostrou que o valor que maximiza o F1 ainda deixava esses blobs passarem, e
-que apertá-lo custava recall nas placas fotografadas de perto.
-
-A causa real estava um passo antes. Uma faixa de cor fixada à mão não tem como saber se existe
-alvo para ela naquela base, e o céu é a maior região de matiz azul de qualquer cena externa. A
-correção foi estrutural: as faixas passaram a ser medidas nas anotações, e o estágio 0 da busca
-passou a poder descartar uma faixa inteira. Nesta base o azul chegou a virar faixa, porque as
-classes `S-14`, `LOC-6` e `RQ` são realmente azuis, mas o estágio 0 mediu que ela rende menos do
-que custa e a descartou. O verde nem chegou a virar faixa, por falta de objetos anotados.
-
-O teto de área continua no pipeline como filtro de escala contra fachadas, toldos e vegetação
-fotografados de perto, e o estágio 2 da busca mede se ele ainda ajuda.
-
-Duas conclusões ficaram registradas:
-
-1. Um filtro de forma ou de escala não corrige uma faixa de cor sem alvo. O lugar de resolver o
-   problema é a medição das anotações, e não um remendo na saída.
-2. As faixas de cor que o CTB define não podem ser assumidas como presentes numa base anotada
-   por terceiros. Cada faixa precisa ser confrontada com os pixels das caixas antes de entrar no
-   pipeline, e precisa provar que se paga.
-
-O desempenho desta etapa é modesto, e isso também é informação. Um detector puramente cromático
-serve como linha de base contra a qual o modelo treinado da 2ª Etapa será comparado. O valor do
-número está em existir, ser reprodutível e ter sido medido do mesmo jeito nas duas etapas.
+As evidências antes e depois estão em `outputs/figuras/04_pipeline_*.jpg`: seis imagens
+sorteadas com semente fixa entre as de validação, sem escolher casos favoráveis.
 
 ---
 
 ## 8. Divisão de tarefas da equipe
 
-A responsabilidade indicada é a principal de cada integrante. A revisão de código é cruzada, de
-modo que nenhuma entrega dependa de uma única pessoa.
-
 | # | Integrante | Matrícula | Responsabilidade principal | Seções do notebook |
 |---|---|---|---|---|
-| 1 | Caio Henrique | 20241013700250 | Aquisição e curadoria do dataset, organização dos diretórios, inventário das imagens e versionamento no Git | 1 e 2 |
-| 2 | Fernanda Andrade | 20241013700048 | Pré-processamento: conversão de espaços de cor, correção de iluminação, filtragem espacial e análise de histograma | 3.2 a 3.5 e 6.1 |
-| 3 | Alisson Leonardo | 20241013700170 | Segmentação por cor e limiarização, operações morfológicas e extração de contornos | 3.6 a 3.8 e 6 |
-| 4 | Vitor Manoel | 20241013700307 | Descritores geométricos, relatório técnico, figuras comparativas, README e documentação de reprodução | 3.8, 7 a 11 |
+| 1 | Caio Henrique | 20241013700250 | Aquisição e curadoria do dataset, inventário e versionamento no Git | 1 e 2 |
+| 2 | Fernanda Andrade | 20241013700048 | Pré-processamento: espaços de cor, iluminação, filtragem e histograma | 3.2 a 3.5 e 6.1 |
+| 3 | Alisson Leonardo | 20241013700170 | Segmentação por cor, limiarização, morfologia e contornos | 3.6 a 3.8 e 6 |
+| 4 | Vitor Manoel | 20241013700307 | Descritores geométricos, relatório técnico, figuras e documentação | 3.8, 7 a 11 |
+
+A revisão de código é cruzada, para nenhuma parte depender de uma única pessoa.
 
 ---
 
 ## 9. Limitações conhecidas
 
-1. **A anotação da base é esparsa, e isso deprime a precisão medida.** São 2.305 objetos em
-   1.973 imagens anotadas, cerca de um por imagem, além de 990 imagens sem anotação nenhuma. As
-   cenas costumam ter mais placas visíveis do que anotadas, e cada detecção correta de uma placa
-   não anotada entra na conta como falso positivo. O mosaico de detecções mostra o efeito. A
-   precisão de 0,236 é, portanto, um piso, e não uma medida limpa do pipeline.
+1. **Anotação esparsa.** As cenas têm mais placas visíveis do que anotadas, e cada acerto numa
+   placa não anotada conta como falso positivo. A precisão de 0,236 é um piso.
+2. **Falso positivo de mesma cor.** Lanterna, carro vermelho, solo exposto e grama seca têm matiz
+   e saturação de placa.
+3. **Placa pequena limita o recall.** Um décimo das placas tem menos de 19 px de lado, mesmo na
+   resolução nativa.
+4. **Faixas descartadas.** Placas azuis e verdes não têm cobertura nesta execução.
+5. **Círculo e octógono sob perspectiva** não se separam por descritor clássico; o código marca
+   a forma como ambígua em vez de arbitrar.
+6. **Corte fixo não é transferível.** Com outra câmera, o limiar de 96 precisa ser recalibrado.
+7. **Sem significado da placa.** O pipeline entrega forma e posição, não a categoria.
 
-   Um quarto dos objetos anotados é da classe `Del`, os delineadores, que pelo CONTRAN são
-   dispositivos auxiliares e não placas. Seria defensável excluí-los do gabarito, já que o
-   escopo declarado é sinalização vertical, mas medimos antes de decidir: sem eles, o F1 vai
-   de 0,201 para 0,202, com o recall subindo de 0,175 para 0,186 e a precisão caindo de 0,236
-   para 0,221. Como a diferença cabe na mesma margem de 0,005 que usamos para desempatar faixas
-   e métodos, o gabarito foi mantido inteiro.
-2. **Falsos positivos de mesma cromaticidade.** Lanternas traseiras, veículos vermelhos, toldos,
-   solo exposto e grama seca muito saturada compartilham matiz e saturação com as placas. Nesta
-   base o efeito é forte: com a porta de saturação em 100, perto da metade dos pixels de fundo
-   dentro da faixa vermelha sobrevive, contra menos de um décimo em bases de melhor qualidade
-   fotográfica. São quadros de câmera veicular em estrada de terra e vegetação seca, com as
-   mesmas matizes das placas.
-3. **Placas pequenas são o teto do recall.** Um décimo das placas anotadas tem menos de 19 px de
-   lado equivalente, mesmo na resolução nativa. Foi por isso que a busca subiu o piso de área para
-   o quantil 0,40: abaixo disso o ruído cromático rende mais que a placa. O recall de 0,175 é o
-   número que mais resiste, e ele é limitado pela escala do objeto na cena, não pela calibração.
-4. **Cada faixa de cor carrega um confundidor natural.** O verde disputa a cena com vegetação, o
-   azul com o céu, o amarelo com solo exposto, o vermelho com veículos. Por isso a porta de
-   saturação e o descarte de faixa são decididos por métrica, e não por hipótese. Nesta execução
-   o azul e o verde ficaram de fora, e as placas dessas cores não têm cobertura.
-5. **Círculo e octógono sob perspectiva.** Ficam indistinguíveis por descritor clássico, e o
-   código sinaliza a ambiguidade em vez de arbitrar. Nesta execução 79,8% dos objetos saíram
-   marcados como forma ambígua. Esse número já foi 89,4% na base esticada, e a queda mostra que
-   boa parte do que atribuíamos à perspectiva era, na verdade, a distorção de 2:1 do
-   pré-processamento (ver Seção 4). O que sobra vem de perspectiva real e do tamanho dos objetos:
-   uma placa de 20 px não tem contorno suficiente para separar um círculo de um octógono.
-6. **Placas abaixo da área mínima calibrada** são descartadas por construção. O compromisso é
-   explícito e ajustável.
-7. **Desbotamento severo e oclusão.** Reduzem a saturação abaixo da porta mínima ou fragmentam o
-   contorno, o que produz falsos negativos.
-8. **Sem identificação do significado da placa.** O pipeline entrega forma e posição, mas não a
-   categoria, que é por definição a tarefa da 2ª Etapa.
-9. **Classes pouco cromáticas ficam sem cobertura.** Das 68 classes anotadas, várias não têm
-   assinatura de cor forte, com pictograma preto sobre fundo claro. Um pipeline que decide por
-   matiz e saturação não tem como alcançá-las.
-10. **A escolha de parâmetros carrega variância amostral.** A Seção 8 do notebook reporta o F1
-   nas duas amostras. A diferença entre o resultado no conjunto de ajuste e no conjunto retido
-   mede o otimismo de escolher entre dezenas de configurações, e é por existir essa diferença
-   que o número publicado é o da amostra retida.
+Os delineadores (classe `Del`, um quarto dos objetos) não são placa pelo CONTRAN. Medimos o
+efeito de excluí-los do gabarito: o F1 iria de 0,201 para 0,202, dentro da margem de desempate,
+então o gabarito foi mantido inteiro.
 
 ---
 
-## 10. Planejamento da 2ª Etapa (N2)
+## 10. Próximos passos (2ª Etapa)
 
-| Limitação atual | Tratamento previsto |
-|---|---|
-| Falsos positivos cromáticos | Detector YOLO treinado em cena completa, capaz de aprender contexto e textura além da cor |
-| Placas pequenas e distantes | Detector treinado em múltiplas escalas, com avaliação separada por tamanho de objeto |
-| Placas verdes, azuis e desbotadas | Aprendizado supervisionado sobre exemplos reais anotados |
-| Ambiguidade entre círculo e octógono | Classificação por CNN sobre a ROI, no lugar do descritor geométrico |
-| Significado da placa | CNN classificadora treinada no GTSRB, com 43 categorias |
+Um detector treinado da família YOLO, usando as próprias classes do CONTRAN já anotadas na base,
+substitui a decisão por cor e forma. O ganho esperado está nos falsos positivos cromáticos e nas
+placas desbotadas. Escala e anotação esparsa continuam sendo limites e precisam de tratamento
+explícito: entrada em resolução maior e revisão das anotações no subconjunto de avaliação.
 
-O pipeline clássico permanece em uso na N2 em três papéis: correção de iluminação como
-pré-processamento do detector, filtro por área mínima como pós-processamento das caixas
-propostas e contagem clássica como linha de base comparativa. É contra os números da Seção 8
-que o ganho do modelo treinado será medido, por mAP, IoU e acurácia.
+O pipeline clássico permanece como pré-processamento (correção de iluminação), pós-processamento
+(filtro por área) e linha de base comparativa.
