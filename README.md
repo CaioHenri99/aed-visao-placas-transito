@@ -14,7 +14,7 @@ A justificativa completa de cada decisão está no
 [relatório técnico](docs/relatorio_tecnico_parcial.pdf) e no próprio notebook. Este README
 cobre o que é preciso para rodar, os parâmetros adotados e os resultados.
 
----
+----
 
 ## 1. O problema
 
