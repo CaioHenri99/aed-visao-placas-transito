@@ -1,10 +1,10 @@
 # Arquitetura da solução
 
-Fluxo de dados da imagem de entrada até a saída pretendida, indicando o ponto em que o
-modelo de IA entra nas próximas etapas do projeto.
+Fluxo de dados da imagem de entrada até a saída, com o ponto em que o modelo de IA entra na
+2ª Etapa do projeto.
 
-A versão renderizada em imagem, com os valores de parâmetro da última execução, é gerada
-pela Seção 9 do notebook em [`arquitetura_pipeline.png`](arquitetura_pipeline.png).
+A versão em imagem, com os valores de parâmetro da última execução, é gerada pela Seção 9 do
+notebook em [`arquitetura_pipeline.png`](arquitetura_pipeline.png).
 
 ---
 
@@ -13,48 +13,48 @@ pela Seção 9 do notebook em [`arquitetura_pipeline.png`](arquitetura_pipeline.
 ```mermaid
 flowchart TD
     subgraph AQ["1 · AQUISIÇÃO"]
-        A1["Dataset Roboflow<br/>placas-de-transito-br v9"]
-        A2["Inventário automático<br/>quantidade · dimensões · classes"]
+        A1["Dataset Roboflow<br/>placas-de-transito-br-wq5tp v1<br/>resolução nativa"]
+        A2["Inventário automático<br/>2.963 imagens · 68 classes"]
         A3["Anotações YOLO<br/>escala real do objeto"]
         A1 --> A2 --> A3
     end
 
     subgraph PRE["2 · PRÉ-PROCESSAMENTO"]
-        B1["Redimensionar<br/>largura = 640 px · INTER_AREA"]
+        B1["Redimensionar<br/>largura = 1.248 px · INTER_AREA"]
         B2["CLAHE no canal L* do LAB<br/>corrige luminância sem deslocar a matiz"]
         B3["Suavização gaussiana 3×3<br/>kernel derivado da escala da placa"]
         B1 --> B2 --> B3
     end
 
     subgraph SEG["3 · SEGMENTAÇÃO"]
-        C1["Mapa de evidência cromática<br/>HSV · faixas medidas nas anotações<br/>portas S_min escolhidas por métrica"]
-        C2["Limiarização<br/>Otsu restrito, T por imagem<br/>(global, Otsu e adaptativa só na comparação)"]
-        C3["Abertura → fechamento<br/>→ preenchimento de buracos"]
+        C1["Mapa de evidência cromática<br/>HSV · faixas medidas nas anotações<br/>portas de saturação escolhidas por métrica"]
+        C2["Limiarização global, limiar = 96<br/>quatro métodos comparados, empate técnico"]
+        C3["Abertura 3×3 → fechamento 9×9<br/>→ preenchimento de buracos"]
         C1 --> C2 --> C3
     end
 
     subgraph EXT["4 · EXTRAÇÃO"]
         D1["findContours<br/>RETR_EXTERNAL"]
-        D2["Filtros<br/>área mín. e máx. · aspecto<br/>extensão · solidez"]
+        D2["Filtros<br/>área de 479 a 12.887 px²<br/>aspecto · extensão · solidez"]
         D3["Descritores geométricos<br/>e classificação de forma"]
         D1 --> D2 --> D3
     end
 
-    subgraph OUT["5 · SAÍDA — CHECKPOINT 1"]
+    subgraph OUT["5 · SAÍDA DO CHECKPOINT 1"]
         E1["Contagem · área<br/>centroide · caixa envolvente"]
         E2["Classe geométrica<br/>circular · losango · triangular · retangular · octogonal"]
         E3["ROI normalizada<br/>+ CSV de descritores"]
         E1 --> E2 --> E3
     end
 
-    subgraph N2["6 · 2ª ETAPA — N2 (aprendizado profundo)"]
+    subgraph N2["6 · 2ª ETAPA, N2 (aprendizado profundo)"]
         F1["Detector YOLO<br/>treinado em cena completa"]
-        F2["CNN classificadora<br/>GTSRB · 43 classes"]
-        F3["Classe da placa + laudo<br/>avaliação por mAP, IoU e acurácia"]
+        F2["Classificação nas 68 classes<br/>do CONTRAN já anotadas na base"]
+        F3["Avaliação por mAP e IoU<br/>contra a linha de base da N1"]
         F1 --> F2 --> F3
     end
 
-    CANNY["Sobel / Canny<br/>evidência visual — NÃO alimenta findContours"]
+    CANNY["Sobel e Canny<br/>só evidência visual, fora da contagem"]
 
     A3 --> B1
     B3 --> C1
@@ -69,53 +69,53 @@ flowchart TD
 
 ---
 
-## O ponto de entrada da IA
+## Onde a IA entra
 
-A fronteira entre as duas etapas é a **ROI normalizada**.
+A fronteira entre as duas etapas é a **ROI normalizada**. O Checkpoint 1 entrega o recorte da
+região de interesse com os seus descritores geométricos, e é esse recorte que a 2ª Etapa
+consome.
 
-O Checkpoint 1 entrega o recorte da região de interesse acompanhado de seus descritores
-geométricos. É exatamente esse recorte que a 2ª Etapa consome — e o pipeline clássico não é
-descartado quando o modelo treinado entra: ele permanece em três papéis.
+O pipeline clássico não é descartado quando o modelo treinado entra. Ele continua em três
+papéis:
 
-| Papel na N2 | Componente reaproveitado |
+| Papel na 2ª Etapa | O que é reaproveitado |
 |---|---|
 | Pré-processamento do detector | Redimensionamento e correção de iluminação (CLAHE) |
-| Pós-processamento das caixas propostas | Filtro por área mínima e descritores geométricos |
-| Linha de base comparativa | Contagem e classificação clássicas, medidas com a mesma métrica |
+| Pós-processamento das caixas propostas | Filtro por área e descritores geométricos |
+| Linha de base | Os números desta etapa, medidos com o mesmo protocolo |
 
-Esse terceiro papel é o que dá sentido quantitativo à 2ª Etapa: o ganho do detector treinado
-é medido **contra os números produzidos aqui**, e não contra uma expectativa.
+O terceiro papel é o que dá medida à 2ª Etapa: o ganho do modelo treinado vai ser comparado
+com os números produzidos aqui, e não com uma expectativa.
 
 ---
 
-## Decisões de arquitetura que o diagrama registra
+## Decisões que o diagrama registra
 
-**A cor é convertida em um canal escalar antes da limiarização.** Em vez de aplicar máscaras
-binárias por faixa de HSV — que exigem bordas rígidas e produzem resultado frágil —, o
-pipeline constrói um mapa contínuo de "quanto este pixel se parece com uma placa" e deixa a
-decisão de corte para a limiarização, que enxerga a distribuição inteira da imagem.
+**A cor vira um canal contínuo antes da limiarização.** Em vez de recortar faixas de HSV com
+bordas rígidas, o pipeline calcula para cada pixel o quanto ele se parece com a cor de uma
+placa, de 0 a 255. A decisão de corte fica com a limiarização, que olha a imagem inteira.
 
-**A morfologia vem antes dos contornos, e o fechamento é a operação crítica.** Uma placa de
-regulamentação é uma orla colorida em torno de um miolo branco: o mapa cromático enxerga o
-anel, não o disco. Sem o fechamento dimensionado pela escala real do objeto, `findContours`
-devolveria um anel fino, com área e centroide errados.
+**O método de limiarização saiu de uma comparação.** Global, Otsu, Otsu restrito e adaptativa
+foram medidos na mesma amostra de ajuste e empataram dentro de 0,005 de F1. A regra de
+desempate, definida antes de rodar, é ficar com o mais simples: por isso o global, com limiar
+96. O limiar T de Otsu de cada imagem continua sendo calculado, só como diagnóstico de
+iluminação.
 
-**O Canny é um ramo lateral, não parte do fluxo principal.** Uma borda fechada de um pixel
-tem dois lados: alimentar `findContours` com ela produz um contorno externo e outro interno
-para o mesmo objeto e duplica a contagem. A extração parte sempre da máscara morfológica
-preenchida.
+**O fechamento é a operação crítica da morfologia.** A placa de regulamentação é uma orla
+vermelha em volta de um miolo branco, e o mapa de cor enxerga o anel, não o disco. Sem o
+fechamento, dimensionado pelo tamanho real das placas, o `findContours` devolveria um anel
+fino, com área e centroide errados.
 
-**As faixas de cor são medidas nas anotações, não fixadas à mão.** A norma fornece apenas as
-âncoras (vermelho, amarelo, verde, azul). A Seção 5.0 do notebook mede a matiz dominante de
-cada classe anotada, agrupa as classes em torno dessas âncoras e recalcula o centro e a largura
-de cada faixa a partir do que observou. Uma âncora sem objetos suficientes não vira faixa. Em
-seguida, o estágio 0 da busca em grade escolhe a porta de saturação de cada faixa por descida
-em coordenadas, e pode descartar uma faixa inteira quando ela custa mais em falsos positivos do
-que rende em detecções. Foi a falta desse passo que, numa versão anterior, manteve no pipeline
-uma faixa azul sem alvo, cuja única captura era o céu.
+**Sobel e Canny ficam num ramo lateral.** Uma borda fechada de um pixel tem dois lados, e o
+`findContours` encontraria um contorno por dentro e outro por fora do mesmo objeto, dobrando a
+contagem. Os contornos saem sempre da máscara morfológica preenchida.
 
-**A filtragem por escala tem duas pontas, não uma.** O piso de área remove ruído residual; o
-teto remove fachadas, toldos e maciços de vegetação fotografados de perto, que passam pelos
-filtros de forma por serem convexos e de proporção compatível. Ambos os limites vêm da
-distribuição de áreas anotadas, medida na Seção 2.1 do notebook, e o estágio 2 da busca mede
-se o teto ainda ajuda depois que a faixa azul saiu; "sem teto" é um resultado legítimo.
+**As faixas de cor são medidas, não fixadas à mão.** A norma dá só as âncoras (vermelho,
+amarelo, verde e azul). A Seção 5.0 do notebook mede a matiz das placas anotadas, forma as
+faixas em torno das âncoras e descarta as que não têm placas suficientes, como o verde. Depois,
+a busca em grade escolhe a porta de saturação de cada faixa e pode descartar uma faixa inteira;
+foi o que aconteceu com o azul, que capturava céu e quase nenhuma placa.
+
+**O filtro de área tem duas pontas.** O mínimo remove ruído; o máximo remove fachada, toldo e
+vegetação fotografados de perto, que passam pelos filtros de forma por serem convexos. Os dois
+saem da distribuição de áreas das placas anotadas.
