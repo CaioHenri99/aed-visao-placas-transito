@@ -231,7 +231,8 @@ sorteadas com semente fixa entre as de validação, sem escolher casos favoráve
 | 1 | Caio Henrique | 20241013700250 | Aquisição e curadoria do dataset, inventário e versionamento no Git | 1 e 2 |
 | 2 | Fernanda Andrade | 20241013700048 | Pré-processamento: espaços de cor, iluminação, filtragem e histograma | 3.2 a 3.5 e 6.1 |
 | 3 | Alisson Leonardo | 20241013700170 | Segmentação por cor, limiarização, morfologia e contornos | 3.6 a 3.8 e 6 |
-| 4 | Vitor Manoel | 20241013700307 | Descritores geométricos, relatório técnico, figuras e documentação | 3.8, 7 a 11 |
+| 4 | Vitor Manoel | 20241013700307 | Descritores geométricos, avaliação, figuras comparativas, relatório técnico e documentação | 3.8, 4, 7 e 8 |
+| 5 | Luiz Antônio Cecilio Andrade | 20241013700374 | Arquitetura da solução, registro dos parâmetros, limitações e planejamento da 2ª Etapa | 9 a 11 |
 
 A revisão de código é cruzada, para nenhuma parte depender de uma única pessoa.
 
