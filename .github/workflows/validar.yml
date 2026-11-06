@@ -22,6 +22,9 @@ jobs:
       - name: Instalar dependências de verificação
         run: python -m pip install --quiet nbformat
 
+      - name: Compilar os scripts Python (erro de sintaxe para aqui)
+        run: python -m py_compile inferir.py
+
       - name: Validar o notebook (JSON íntegro e conforme ao nbformat)
         run: |
           python - <<'PY'
