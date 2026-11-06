@@ -1,18 +1,167 @@
 # Sistema Inteligente de Detecção e Classificação de Placas de Trânsito
 
-AED / Projeto Integrador, 2ª Etapa, Checkpoint 1 (N1)
+AED / Projeto Integrador · Checkpoint 1 (N1) e Checkpoint 2 (N2)
 
 Pontifícia Universidade Católica de Goiás · Escola Politécnica e de Artes
 Ciência de Dados e Inteligência Artificial · CDI1021 Visão Computacional (2026/2)
 Prof. Welington Júlio Dias Rodrigues
 
+O sistema recebe uma foto de câmera veicular e devolve as placas de trânsito que aparecem nela:
+onde está cada uma e qual é, pelo código do CONTRAN. Na N1, a decisão era de um pipeline clássico
+de Processamento Digital de Imagens, por cor e forma. Na N2, ela passa para um detector treinado
+(YOLO26), e o pipeline da N1 vira a linha de base contra a qual o ganho é medido.
+
+| Etapa | Notebook | O que entrega |
+|---|---|---|
+| N2 · Checkpoint 2 | [`checkpoint2_modelo.ipynb`](notebooks/checkpoint2_modelo.ipynb) | Divisão sem vazamento, linha de base medida, modelo treinado e diagnosticado, pipeline de inferência ([`inferir.py`](inferir.py)) |
+| N1 · Checkpoint 1 | [`checkpoint1_pipeline_pdi.ipynb`](notebooks/checkpoint1_pipeline_pdi.ipynb) | Pipeline clássico e seus parâmetros, justificados no [relatório técnico](docs/relatorio_tecnico_parcial.pdf) |
+
+----
+
+## N2 · Modelo treinado
+
+### Resultado no teste
+
+O teste são as 403 imagens de dois dias de captura (10/10 e 11/10), com 263 placas anotadas,
+que não participaram de nenhuma escolha. O limiar de confiança do modelo (0,41) foi fixado na
+validação. Linha de base e modelo são medidos com o mesmo gabarito e o mesmo casamento por IoU:
+
+| | Linha de base (N1) | Modelo (YOLO26s) |
+|---|---|---|
+| Placas encontradas, IoU ≥ 0,50 | 31 de 263 | **229 de 263** |
+| Detecções sem placa anotada | 282 | 150 |
+| F1 de detecção, IoU ≥ 0,50 | 0,108 | **0,713** |
+| F1 exigindo também a classe certa | não classifica | **0,639** |
+| mAP50 · mAP50-95 | não se aplica | 0,736 · 0,478 |
+
+Na validação, o mAP50 era 0,770: o teste confirmou a validação. A maior parte das detecções "sem
+placa anotada" são placas reais que a base não anotou (49 de 54 numa amostra do teste, Seção 9.3
+do notebook), então a precisão medida, de 0,604, é um piso.
+
+### Como foi feito
+
+- **Divisão por dia de captura**, e não por imagem: os 8 dias de gravação vão inteiros para treino
+  (5 dias, 2.161 imagens), validação (28/09, 399) ou teste (10/10 e 11/10, 403). A divisão que vem
+  do Roboflow foi descartada porque põe fotos tiradas com 1 s de diferença em conjuntos diferentes.
+- **Mesma placa em dias diferentes, verificada.** A cena em volta de cada placa de validação e
+  teste foi comparada com a das placas de treino (SIFT e RANSAC, 44 mil pares), e os pares mais
+  parecidos foram revistos a olho. Foram achadas 5 placas repetidas, em dois lugares (4 das 263 do
+  teste e 1 das 254 da validação). Sem elas, o F1 com a classe certa no teste vai de 0,639 para
+  0,636 (Seção 9.4 do notebook).
+- **26 classes de placa e `outra_placa`.** Ficam como classe própria as placas com pelo menos 10
+  exemplos no treino; as 41 classes raras viram `outra_placa`. O delineador (`Del`) sai do modelo,
+  porque só foi anotado em metade dos dias.
+- **Aumento de dados medido nas placas do treino:** sem espelhamento (troca curva à direita por
+  curva à esquerda), brilho e saturação até o percentil 5 medido, escala até o tamanho das placas
+  mais distantes.
+- **YOLO26 nano e small**, a 1.280 px, 20 épocas cada no Colab. Pela regra fixada antes do treino,
+  o small só ficaria se ganhasse 0,02 de mAP50 na validação; ganhou 0,147 (0,770 contra 0,623).
+
+### Como executar a inferência
+
+```bash
+git clone https://github.com/CaioHenri99/aed-visao-placas-transito.git
+cd aed-visao-placas-transito
+pip install -r requirements.txt
+
+python inferir.py caminho/da/foto.jpg                 # uma imagem
+python inferir.py pasta_de_fotos/ --saida resultados  # todas as imagens de uma pasta
+```
+
+O modelo treinado já vem no repositório (`modelos/modelo_n2.pt`, 20 MB), junto com o limiar
+escolhido na validação (`modelos/modelo_n2.json`). Não precisa de GPU. Para cada imagem, o
+script:
+
+1. lê a imagem (JPG, PNG, BMP ou WebP);
+2. faz o mesmo pré-processamento da validação no treino: *letterbox* para 1.280 px, RGB, 0 a 1;
+3. roda o modelo;
+4. imprime as placas acima do limiar e grava, na pasta de saída (`saida_inferencia/` por padrão),
+   a imagem com as caixas desenhadas e um JSON.
+
+```
+$ python inferir.py captura_2023-10-10_17-29-24_png.rf.b80e265d20f80a4d38bb7a881b00c232.jpg
+Modelo modelo_n2.pt | entrada de 1280 px | limiar de confiança 0.41
+
+captura_2023-10-10_17-29-24_png.rf.b80e265d20f80a4d38bb7a881b00c232.jpg: 1 placa(s) em 2057 ms
+  R-19         0.86  caixa (540, 424, 560, 445)  Velocidade máxima permitida
+```
+
+A caixa vem em pixels da imagem original (x0, y0, x1, y1). A primeira imagem demora uns 2 s, por
+causa da carga do modelo; as seguintes, cerca de 0,35 s cada numa CPU de notebook.
+
+| Opção | Efeito |
+|---|---|
+| `--saida PASTA` | Onde gravar as imagens anotadas e os JSON |
+| `--limiar 0.25` | Outro limiar de confiança (o padrão é o da validação, 0,41) |
+| `--sem-arquivos` | Só imprime, sem gravar nada |
+| `--modelo ARQ.pt` | Outro peso treinado |
+
+### Como reproduzir o treino
+
+1. Abra [`notebooks/checkpoint2_modelo.ipynb`](notebooks/checkpoint2_modelo.ipynb) no Google
+   Colab e escolha *Ambiente de execução → Alterar o tipo de ambiente de execução → GPU* (T4).
+2. *Executar tudo* (`Ctrl+F9`). Logo no início, a Seção 0 pede acesso ao Google Drive, onde o
+   treino é salvo, e a Seção 1 pede a chave gratuita da API do Roboflow. Depois disso, o resto
+   roda sozinho.
+3. As Seções 1 a 6 levam poucos minutos. A Seção 7 treina o nano (cerca de 25 min numa T4) e o
+   small (cerca de 35 min). Se a sessão cair, basta rodar de novo: o treino retoma do último
+   *checkpoint*, e um modelo já concluído não é treinado outra vez.
+4. No fim, as curvas e matrizes vão para `outputs/n2/treino/` e o peso escolhido para
+   `modelos/modelo_n2.pt`. No Colab, uma cópia fica em `MyDrive/aed_visao_n2/para_o_repositorio/`,
+   na mesma estrutura do repositório, para ser trazida ao Git.
+
+Sem GPU, o notebook roda inteiro mesmo assim: a Seção 7 pula o treino, e as Seções 8 a 10 usam o
+modelo que já está no repositório. Para rodar local, com a base já baixada, aponte a variável de
+ambiente `AED_PASTA_LOCAL` para a pasta dela; sem isso, a Seção 1 baixa a base com a chave do
+Roboflow (veja abaixo, em *Execução*).
+
+----
+
+## Estrutura do repositório
+
+```
+aed-visao-placas-transito/
+├── README.md
+├── requirements.txt
+├── inferir.py                         # N2: pipeline de inferência (imagem -> placas)
+├── .github/workflows/validar.yml      # CI: notebooks íntegros, script compila, sem chave de API
+├── notebooks/
+│   ├── checkpoint1_pipeline_pdi.ipynb # N1: pipeline clássico (linha de base)
+│   └── checkpoint2_modelo.ipynb       # N2: divisão, linha de base, treino, diagnóstico, inferência
+├── modelos/                           # N2: modelo treinado (ficha em modelos/README.md)
+│   ├── modelo_n2.pt                   # pesos do YOLO26s
+│   └── modelo_n2.json                 # classes e limiar de confiança escolhido na validação
+├── outputs/                           # gerado pelos notebooks e versionado
+│   ├── n2/                            # N2 (índice dos arquivos em outputs/n2/README.md)
+│   │   ├── treino/                    # curvas, configuração e escolha de cada treino
+│   │   └── figuras/
+│   ├── figuras/                       # N1: evidências visuais
+│   ├── parametros_adotados.json       # N1: registro completo e reprodutível da execução
+│   ├── parametros_adotados.md         # N1: tabela de parâmetros
+│   ├── avaliacao_por_imagem.csv       # N1: VP, FP, FN e limiar T, imagem a imagem
+│   └── ...                            # N1: inventário, busca em grade, descritores
+├── docs/
+│   ├── relatorio_tecnico_parcial.pdf  # relatório técnico do PP1
+│   ├── arquitetura.md                 # diagrama da solução em Mermaid
+│   ├── arquitetura_pipeline.png       # diagrama gerado pelo notebook da N1
+│   └── referencias/                   # enunciado e proposta da 1ª Etapa
+└── data/                              # não versionado: o notebook baixa a base aqui
+    ├── placas-de-transito-br-wq5tp-1/ # base do Roboflow
+    └── n2_yolo/                       # base no formato do YOLO, montada pela N2
+```
+
+As saídas da N1 ficam na raiz de `outputs/`, e não numa pasta `n1/`, porque é ali que o notebook
+entregue na N1 grava e que o notebook da N2 lê os parâmetros congelados; mover quebraria a
+reprodução dos dois.
+
+----
+
+# N1 · Pipeline clássico (linha de base)
+
 Pipeline de Processamento Digital de Imagens clássico, sem aprendizado de máquina, que recebe
 uma imagem de via, segmenta as placas de sinalização vertical e extrai contagem, área, centroide,
-caixa envolvente e classe geométrica de cada uma.
-
-A justificativa completa de cada decisão está no
-[relatório técnico](docs/relatorio_tecnico_parcial.pdf) e no próprio notebook. Este README
-cobre o que é preciso para rodar, os parâmetros adotados e os resultados.
+caixa envolvente e classe geométrica de cada uma. A justificativa completa de cada decisão está
+no [relatório técnico](docs/relatorio_tecnico_parcial.pdf) e no próprio notebook.
 
 ----
 
@@ -73,35 +222,7 @@ A Seção 1 do notebook oferece três caminhos, e basta um funcionar:
 
 ---
 
-## 3. Estrutura do repositório
-
-```
-aed-visao-placas-transito/
-├── README.md
-├── requirements.txt
-├── .github/workflows/validar.yml     # CI: notebook íntegro e sem chave de API
-├── notebooks/
-│   └── checkpoint1_pipeline_pdi.ipynb
-├── docs/
-│   ├── relatorio_tecnico_parcial.pdf # relatório técnico do PP1
-│   ├── arquitetura.md                # diagrama da solução em Mermaid
-│   ├── arquitetura_pipeline.png      # diagrama gerado pelo notebook
-│   └── referencias/                  # enunciado e proposta da 1ª Etapa
-├── data/                             # dataset baixado pelo notebook (não versionado)
-│   └── placas-de-transito-br-wq5tp-1/
-└── outputs/                          # gerado pelo notebook e versionado
-    ├── parametros_adotados.json      # registro completo e reprodutível da execução
-    ├── parametros_adotados.md        # tabela de parâmetros (reproduzida na Seção 6)
-    ├── inventario_dataset.csv        # uma linha por imagem: split, dimensões, objetos
-    ├── busca_em_grade.csv            # todas as configurações testadas
-    ├── avaliacao_por_imagem.csv      # VP, FP, FN e limiar T, imagem a imagem
-    ├── descritores_objetos.csv       # saída numérica, um objeto por linha
-    └── figuras/                      # evidências visuais
-```
-
----
-
-## 4. Dataset
+## 3. Dataset
 
 Base [Placas de Trânsito BR](https://universe.roboflow.com/caios-workspace-01wh5/placas-de-transito-br-wq5tp/dataset/1)
 (Roboflow Universe, *Public Domain*), cópia em resolução nativa da
@@ -143,7 +264,7 @@ equipe serão anonimizadas antes de publicadas.
 
 ---
 
-## 5. O pipeline
+## 4. O pipeline
 
 ```
 imagem → redimensionar → corrigir iluminação → suavizar → mapa de evidência cromática
@@ -164,7 +285,7 @@ imagem → redimensionar → corrigir iluminação → suavizar → mapa de evid
 
 ---
 
-## 6. Parâmetros adotados
+## 5. Parâmetros adotados
 
 Nenhum valor foi escolhido por tentativa e erro. Os parâmetros têm três origens:
 
@@ -202,7 +323,7 @@ A tabela é gerada pelo notebook em `outputs/parametros_adotados.md`.
 
 ---
 
-## 7. Resultados
+## 6. Resultados
 
 Medidos em 250 imagens de validação que não participaram de nenhuma escolha de parâmetro,
 com casamento por IoU ≥ 0,30:
@@ -224,7 +345,7 @@ sorteadas com semente fixa entre as de validação, sem escolher casos favoráve
 
 ---
 
-## 8. Divisão de tarefas da equipe
+## 7. Divisão de tarefas da equipe
 
 | # | Integrante | Matrícula | Responsabilidade principal | Seções do notebook |
 |---|---|---|---|---|
@@ -238,7 +359,7 @@ A revisão de código é cruzada, para nenhuma parte depender de uma única pess
 
 ---
 
-## 9. Limitações conhecidas
+## 8. Limitações conhecidas
 
 1. **Anotação esparsa.** As cenas têm mais placas visíveis do que anotadas, e cada acerto numa
    placa não anotada conta como falso positivo. A precisão de 0,236 é um piso.
@@ -258,12 +379,10 @@ então o gabarito foi mantido inteiro.
 
 ---
 
-## 10. Próximos passos (2ª Etapa)
+## 9. O que veio depois (N2)
 
-Um detector treinado da família YOLO, usando as próprias classes do CONTRAN já anotadas na base,
-substitui a decisão por cor e forma. O ganho esperado está nos falsos positivos cromáticos e nas
-placas desbotadas. Escala e anotação esparsa continuam sendo limites e precisam de tratamento
-explícito: entrada em resolução maior e revisão das anotações no subconjunto de avaliação.
-
-O pipeline clássico permanece como pré-processamento (correção de iluminação), pós-processamento
-(filtro por área) e linha de base comparativa.
+O detector treinado previsto aqui foi feito na N2 (seção *N2 · Modelo treinado*, no topo deste
+README). O pipeline clássico ficou como linha de base comparativa. Ele não entrou como
+pré-processamento do modelo: o detector aprendeu com as imagens cruas, e um CLAHE aplicado só na
+inferência mudaria a imagem que ele recebe. Escala e anotação esparsa continuam sendo os limites
+principais, agora medidos no notebook da N2 (Seções 8 e 11).
