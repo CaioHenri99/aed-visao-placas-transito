@@ -10,6 +10,7 @@
 *.yaml  text eol=lf
 *.yml   text eol=lf
 *.csv   text eol=lf
+*.json  text eol=lf
 
 # Binários: nunca normalizar.
 *.png  binary
@@ -18,6 +19,7 @@
 *.pdf  binary
 *.docx binary
 *.zip  binary
+*.pt   binary
 
 # O GitHub classifica repositórios com notebooks como "Jupyter Notebook".
 # Marcar o notebook como código (e não documentação) mantém a linguagem correta.

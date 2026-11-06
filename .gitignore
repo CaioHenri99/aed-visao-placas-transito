@@ -10,6 +10,18 @@ data/*
 # checkpoint). Apenas o pacote compactado fica de fora.
 outputs_checkpoint1.zip
 
+# -------------------------------------------------------------- modelos
+# Só o peso do modelo escolhido na N2 é versionado (modelos/modelo_n2.pt). Pesos
+# iniciais baixados pelo Ultralytics e pastas de treino ficam fora.
+*.pt
+!modelos/*.pt
+runs/
+
+# Pasta padrão das imagens anotadas e JSON do inferir.py, e a pasta em que os
+# artefatos do treino chegam do Drive antes de irem para outputs/ e modelos/.
+saida_inferencia/
+/treino/
+
 # ------------------------------------------------------------- ambiente
 __pycache__/
 *.py[cod]
@@ -36,3 +48,6 @@ desktop.ini
 
 # Material de aula do professor: fica local, nao e redistribuido no repositorio.
 docs/referencias/Apostila*.pdf
+
+# Gerador local do PDF do relatorio: ferramenta de quem edita, fora do repositorio.
+docs/gerar_relatorio.py

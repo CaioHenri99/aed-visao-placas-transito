@@ -1,4 +1,4 @@
-# AED · Visão Computacional (CDI1021) — Checkpoint 1
+# AED · Visão Computacional (CDI1021) · Checkpoints 1 e 2
 # Python 3.10 ou superior
 #
 #   pip install -r requirements.txt
@@ -15,6 +15,10 @@ PyYAML>=6.0
 # Download do dataset a partir do Roboflow Universe (opcional: existem os
 # caminhos B e C, documentados na Seção 1 do notebook).
 roboflow>=1.1.30
+
+# N2: treino e inferência do detector (inferir.py). A versão é fixa, a mesma do
+# treino registrado em outputs/n2/treino/. Instala também o PyTorch.
+ultralytics==8.4.182
 
 # Execução local do notebook (desnecessário no Google Colab).
 jupyterlab>=4.0
