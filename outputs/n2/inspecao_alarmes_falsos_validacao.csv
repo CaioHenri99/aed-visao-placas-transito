@@ -1,0 +1,46 @@
+n,arquivo,prevista,caixa_xywh,julgamento
+0,captura_2023-09-28_15-01-14_png.rf.df541d7230f0fde76354295d430e496c.jpg,MP,"(0.2761, 0.6148, 0.0128, 0.0676)",placa ou marcador real sem anotacao
+1,captura_2023-09-28_15-05-58_png.rf.c0f74f76481272a6128a8533bb14d71e.jpg,E-5,"(0.2849, 0.6195, 0.0112, 0.0283)","indefinido (cortado na borda, pequeno ou ambiguo)"
+2,captura_2023-09-28_15-06-01_png.rf.223e2bab83a2b555dc1923fffb9c8197.jpg,I-4,"(0.3512, 0.6447, 0.0184, 0.0173)",placa ou marcador real sem anotacao
+3,captura_2023-09-28_15-07-14_png.rf.9a609855ff80e8bbbbecab9429934d10.jpg,R-1,"(0.5666, 0.6179, 0.012, 0.0299)",nao e sinalizacao (anuncio ou objeto)
+4,captura_2023-09-28_15-07-19_png.rf.8c7d76c9033d96e2b69854efbec9ad5e.jpg,RQ,"(0.5211, 0.5031, 0.0255, 0.0676)",nao e sinalizacao (anuncio ou objeto)
+5,captura_2023-09-28_15-12-18_png.rf.be68a22a2e3d7bb631c89317c5a1e139.jpg,TUR-4,"(0.6193, 0.5487, 0.0654, 0.0912)",nao e sinalizacao (anuncio ou objeto)
+6,captura_2023-09-28_15-16-38_png.rf.d3980b9471c04ced4d45cfd551da20ca.jpg,outra_placa,"(0.6409, 0.5535, 0.0399, 0.0849)",placa ou marcador real sem anotacao
+7,captura_2023-09-28_15-18-15_png.rf.e2a00cd2c7cef2291821a90654f98bbd.jpg,outra_placa,"(0.2897, 0.6164, 0.0176, 0.0377)",placa ou marcador real sem anotacao
+8,captura_2023-09-28_15-18-35_png.rf.fca2777bf27b6d6a01efbee472f93611.jpg,RQ,"(0.166, 0.5991, 0.0144, 0.0535)","indefinido (cortado na borda, pequeno ou ambiguo)"
+9,captura_2023-09-28_15-20-59_png.rf.163003c466fbc3eebd5986c8a62435b8.jpg,I-4,"(0.569, 0.5582, 0.067, 0.0582)",nao e sinalizacao (anuncio ou objeto)
+10,captura_2023-09-28_15-23-09_png.rf.a2ddac5e55ea39793f86e5f6e2ef11d6.jpg,outra_placa,"(0.3336, 0.033, 0.0319, 0.0582)",placa ou marcador real sem anotacao
+11,captura_2023-09-28_15-29-21_png.rf.8fa0c8e0823d16cf66111896315d299c.jpg,I-4,"(0.5543, 0.6887, 0.0346, 0.0346)",placa ou marcador real sem anotacao
+12,captura_2023-09-28_15-30-04_png.rf.55ffd51fde306681dfed8c64c3424e52.jpg,R-7,"(0.6543, 0.6101, 0.048, 0.1069)",placa ou marcador real sem anotacao
+13,captura_2023-09-28_15-30-09_png.rf.318031ec7ee092e88ce7c3d9ea817b0b.jpg,S-14,"(0.9173, 0.5487, 0.0181, 0.0566)",placa ou marcador real sem anotacao
+14,captura_2023-09-28_15-36-48_png.rf.9ade8cb9fcd4f61f6724e837dab233ee.jpg,I-4,"(0.6843, 0.6604, 0.0661, 0.0487)",placa ou marcador real sem anotacao
+15,captura_2023-09-28_15-36-51_png.rf.1d852f12987fc81b0effe3d922143934.jpg,I-4,"(0.8638, 0.4827, 0.074, 0.1022)","indefinido (cortado na borda, pequeno ou ambiguo)"
+16,captura_2023-09-28_15-39-55_png.rf.0820a5f7872b21ecb2288ddc9d7bcfdb.jpg,LOC-6,"(0.6661, 0.6651, 0.0591, 0.0283)","indefinido (cortado na borda, pequeno ou ambiguo)"
+17,captura_2023-09-28_15-40-21_png.rf.f432d710f508b8b232a3361b52ef7298.jpg,ESP-20,"(0.5331, 0.684, 0.0425, 0.044)",placa ou marcador real sem anotacao
+18,captura_2023-09-28_15-40-29_png.rf.02ce6e7b0ece01f78614b6f15cd890ca.jpg,I-4,"(0.5339, 0.6777, 0.0449, 0.0299)",placa ou marcador real sem anotacao
+19,captura_2023-09-28_15-40-32_png.rf.4ffb3e9b038d3b9ddb6ca924643066c4.jpg,I-4,"(0.5669, 0.6934, 0.0575, 0.044)",placa ou marcador real sem anotacao
+20,captura_2023-09-28_15-40-43_png.rf.9475a1e4c7ce15fed8c975ffc9d0219d.jpg,MP,"(0.3827, 0.695, 0.0071, 0.0346)",placa ou marcador real sem anotacao
+21,captura_2023-09-28_15-40-43_png.rf.9475a1e4c7ce15fed8c975ffc9d0219d.jpg,I-4,"(0.3457, 0.673, 0.0315, 0.0393)",placa ou marcador real sem anotacao
+22,captura_2023-09-28_15-41-12_png.rf.698409e5a8f00d38bf442494bb0b4143.jpg,LOC-6,"(0.6173, 0.6462, 0.1079, 0.0786)",placa ou marcador real sem anotacao
+23,captura_2023-09-28_15-41-58_png.rf.ca91ca10f54834122c256cc8707b335f.jpg,E-5,"(0.9528, 0.3711, 0.0472, 0.2547)","indefinido (cortado na borda, pequeno ou ambiguo)"
+24,captura_2023-09-28_15-41-58_png.rf.ca91ca10f54834122c256cc8707b335f.jpg,A-42a,"(0.7047, 0.5425, 0.0717, 0.1525)",placa ou marcador real sem anotacao
+25,captura_2023-09-28_15-42-57_png.rf.922ede51a9e28589caf33f397c65f98f.jpg,R-19,"(0.5409, 0.6965, 0.0102, 0.022)",placa ou marcador real sem anotacao
+26,captura_2023-09-28_15-42-59_png.rf.3e215614ed5a471c1f54713725656f8f.jpg,outra_placa,"(0.5795, 0.6682, 0.0197, 0.0409)",placa ou marcador real sem anotacao
+27,captura_2023-09-28_15-43-05_png.rf.b1d954864201f3426ac26cade33c8af9.jpg,LOC-6,"(0.6559, 0.5456, 0.1409, 0.1604)",placa ou marcador real sem anotacao
+28,captura_2023-09-28_15-43-15_png.rf.3284f9c76c6321b25e2697673276cfde.jpg,ESP-20,"(0.774, 0.5645, 0.1063, 0.1384)",placa ou marcador real sem anotacao
+29,captura_2023-09-28_15-43-21_png.rf.618a49bce5383f82b419f83537e91ffa.jpg,ESP-20,"(0.589, 0.6682, 0.0488, 0.0629)",placa ou marcador real sem anotacao
+30,captura_2023-09-28_15-43-29_png.rf.45f7760b3595bbd2758b237f2b251774.jpg,I-4,"(0.5622, 0.6777, 0.0386, 0.0393)",placa ou marcador real sem anotacao
+31,captura_2023-09-28_15-44-59_png.rf.3fa35a67f50fc6c91de4831c094a651d.jpg,R-7,"(0.9677, 0.2862, 0.0315, 0.2264)","indefinido (cortado na borda, pequeno ou ambiguo)"
+32,captura_2023-09-28_15-47-08_png.rf.dda53914c4cdf696486a5b86ec743adc.jpg,ESP-20,"(0.5417, 0.6824, 0.0299, 0.0425)",placa ou marcador real sem anotacao
+33,captura_2023-09-28_15-47-21_png.rf.bdbd4ee88adcb85f7a81180a9123b4a8.jpg,outra_placa,"(0.6024, 0.6651, 0.0346, 0.0755)",placa ou marcador real sem anotacao
+34,captura_2023-09-28_15-47-24_png.rf.af27d575721a7b6cb0862c7350e24dff.jpg,ESP-20,"(0.5913, 0.6431, 0.0819, 0.0833)",placa ou marcador real sem anotacao
+35,captura_2023-09-28_15-50-39_png.rf.1dae1187459af7d23a250dbfee73e463.jpg,S-14,"(0.748, 0.5173, 0.0472, 0.1808)",placa ou marcador real sem anotacao
+36,captura_2023-09-28_15-50-42_png.rf.9d9c531a61448b0727591b4647652727.jpg,MP,"(0.6165, 0.6431, 0.0189, 0.0881)",placa ou marcador real sem anotacao
+37,captura_2023-09-28_15-54-12_png.rf.e5a1c068cf177dc431300f1bf2f8b549.jpg,ESP-20,"(0.5969, 0.6321, 0.0622, 0.0613)",placa ou marcador real sem anotacao
+38,captura_2023-09-28_16-00-26_png.rf.bff006af9cccec6fc20ed95cb7cd55a9.jpg,ESP-20,"(0.7543, 0.5425, 0.1102, 0.0975)",placa ou marcador real sem anotacao
+39,captura_2023-09-28_16-04-12_png.rf.2683428b550c513e052bc150213a031b.jpg,outra_placa,"(0.5913, 0.5802, 0.0402, 0.0818)",placa ou marcador real sem anotacao
+40,captura_2023-09-28_16-05-16_png.rf.91c0cd4efba0a3759be060a8957bc675.jpg,ESP-20,"(0.6378, 0.6509, 0.0575, 0.0629)",placa ou marcador real sem anotacao
+41,captura_2023-09-28_16-06-14_png.rf.8f903bc8d5562f08d44c9e97f643cc22.jpg,LOC-6,"(0.5331, 0.7123, 0.0402, 0.0189)",placa ou marcador real sem anotacao
+42,captura_2023-09-28_16-07-04_png.rf.7c92890964aa67a1000d41ceaf4304d3.jpg,R-7,"(0.5055, 0.6981, 0.0157, 0.0299)",placa ou marcador real sem anotacao
+43,captura_2023-09-28_16-07-28_png.rf.aae9a0ff6433ee8c9b25df37a188549e.jpg,I-4,"(0.5126, 0.0786, 0.0827, 0.1431)",placa ou marcador real sem anotacao
+44,captura_2023-09-28_16-07-38_png.rf.d41a499fb94dbd4589f31df824ca0828.jpg,LOC-6,"(0.5764, 0.6698, 0.0512, 0.0472)",placa ou marcador real sem anotacao

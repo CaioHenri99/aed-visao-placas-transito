@@ -1,0 +1,26 @@
+{
+  "descricao": "Pipeline classico da N1, parametros congelados, deteccao sem classe",
+  "parametros": "outputs/parametros_adotados.json",
+  "conjunto": "teste",
+  "dias": "10/10, 11/10",
+  "imagens": 403,
+  "placas_anotadas": 263,
+  "metricas": {
+    "IoU >= 0.30": {
+      "precisao": 0.115,
+      "recall": 0.137,
+      "f1": 0.125,
+      "vp": 36.0,
+      "fp": 277.0,
+      "fn": 227.0
+    },
+    "IoU >= 0.50": {
+      "precisao": 0.099,
+      "recall": 0.118,
+      "f1": 0.108,
+      "vp": 31.0,
+      "fp": 282.0,
+      "fn": 232.0
+    }
+  }
+}

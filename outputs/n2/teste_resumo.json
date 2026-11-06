@@ -1,0 +1,33 @@
+{
+  "modelo": "yolo26s",
+  "limiar_confianca": 0.41,
+  "limiar_escolhido_em": "validacao",
+  "imagens": 403,
+  "placas_anotadas": 263,
+  "mAP50": 0.736,
+  "mAP50_95": 0.478,
+  "deteccao_iou_050": {
+    "precisao": 0.604,
+    "recall": 0.871,
+    "f1": 0.713,
+    "vp": 229.0,
+    "fp": 150.0,
+    "fn": 34.0
+  },
+  "classe_certa_iou_050": {
+    "precisao": 0.541,
+    "recall": 0.779,
+    "f1": 0.639,
+    "vp": 205.0,
+    "fp": 174.0,
+    "fn": 58.0
+  },
+  "linha_de_base_iou_050": {
+    "precisao": 0.099,
+    "recall": 0.118,
+    "f1": 0.108,
+    "vp": 31.0,
+    "fp": 282.0,
+    "fn": 232.0
+  }
+}

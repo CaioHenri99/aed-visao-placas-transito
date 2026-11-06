@@ -1,0 +1,15 @@
+transformacao,adotado,padrao_ultralytics,motivo
+fliplr,0.0,0.5,"Espelhar troca o sentido da placa: uma A-2b (curva à direita) vira uma A-2a (curva à esquerda) com o rótulo errado, e números e letras ficam invertidos."
+flipud,0.0,0.0,A câmera nunca fica de cabeça para baixo.
+degrees,0.0,0.0,Câmera presa no carro e placa em poste vertical: a placa não aparece girada.
+shear,0.0,0.0,Mesmo motivo da rotação.
+perspective,0.0,0.0,A visada oblíqua das placas na beira da estrada já está nas fotos.
+hsv_h,0.015,0.015,"Desloca a matiz em até 2.7, menos da metade da distância entre o vermelho e o amarelo medidos na N1 (8.0). Não troca a cor que define o tipo da placa."
+hsv_s,0.55,0.7,"Leva a saturação até 0.45x, cobrindo o percentil 5 medido (0.46x): placa desbotada ou contra o sol."
+hsv_v,0.5,0.4,"Leva o brilho até 0.50x, cobrindo o percentil 5 medido (0.53x): placa na sombra ou contra o sol."
+scale,0.5,0.5,"Reduzir a placa mediana (42 px) por 0.50 a deixa com 21 px, perto do percentil 5 (19 px): imita placas mais distantes sem criar placas menores que as reais."
+translate,0.1,0.1,A placa aparece em alturas e lados diferentes da via.
+mosaic,1.0,1.0,"Junta quatro fotos em cada exemplo: mais fundos e mais placas por lote, o que ajuda com pouco mais de mil imagens anotadas."
+close_mosaic,10.0,10.0,"Desliga o mosaico nas 10 últimas épocas, para o fim do treino ver quadros inteiros, como na operação."
+mixup,0.0,0.0,Sobrepor duas fotos cria uma cena que a câmera nunca produz.
+cutmix,0.0,0.0,Mesmo motivo do mixup.

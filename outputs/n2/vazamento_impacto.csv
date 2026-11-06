@@ -1,0 +1,5 @@
+conjunto,imagens,n_imagens,placas,F1 detecção,F1 classe certa
+Validação,todas,399,254,0.806,0.731
+Validação,sem as imagens repetidas,398,253,0.806,0.729
+Teste,todas,403,263,0.713,0.639
+Teste,sem as imagens repetidas,400,259,0.712,0.636

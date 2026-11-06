@@ -1,0 +1,3 @@
+modelo,parametros_milhoes,mAP50,mAP50_95,precisao,recall,ms_por_imagem
+yolo26n,2.5,0.623,0.359,0.631,0.627,9.5
+yolo26s,10.0,0.77,0.443,0.731,0.735,28.5

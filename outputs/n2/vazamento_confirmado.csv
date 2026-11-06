@@ -1,0 +1,6 @@
+conjunto,arquivo,k,classe,par_no_treino,par_k,como_foi_confirmado
+teste,captura_2023-10-11_16-31-05_png.rf.04eab56cb5d10c37cc0e6c0c0a37812a.jpg,0,R-19,captura_2023-10-09_15-23-16_png.rf.0af511c5b9ca8c62d8aed6dca568514c.jpg,0,"par revisado: mesmo lugar (placa de 40 km/h, mesma curva e mesmo guard-rail)"
+teste,captura_2023-10-11_16-31-10_png.rf.593985665c2989da5f1ff379c8da1a2a.jpg,0,R-1,captura_2023-10-09_15-23-23_png.rf.1ce8d6c717ec4a5aed7a4610afb61b66.jpg,0,"par revisado: mesmo lugar (PARE no trevo, mesmo outdoor ao fundo)"
+teste,captura_2023-10-11_16-31-10_png.rf.593985665c2989da5f1ff379c8da1a2a.jpg,1,outra_placa,captura_2023-10-09_15-23-21_png.rf.ae43df1b09a1e90a192680478bfac30c.jpg,0,"a placa redonda ao lado do PARE confirmado, anotada tambem no treino, no mesmo trevo"
+teste,captura_2023-10-11_16-31-11_png.rf.0de732ca7a74516e13669b682ddc40a3.jpg,0,R-1,captura_2023-10-09_15-23-23_png.rf.1ce8d6c717ec4a5aed7a4610afb61b66.jpg,0,"o mesmo PARE, um quadro depois"
+validacao,captura_2023-09-28_16-10-15_png.rf.6d012e551517b1bd9449ad422b77ce9a.jpg,0,MP,captura_2023-10-05_15-16-23_png.rf.fcdd0c8e28372fcff234fde6e9dea890.jpg,0,"par revisado: mesmo lugar (marcador de perigo, mesmo trevo e mesma construcao ao fundo)"
