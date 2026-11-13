@@ -38,6 +38,19 @@ Na validação, o mAP50 era 0,770: o teste confirmou a validação. A maior part
 placa anotada" são placas reais que a base não anotou (49 de 54 numa amostra do teste, Seção 9.3
 do notebook), então a precisão medida, de 0,604, é um piso.
 
+**Custo.** Medidos lado a lado nas mesmas 100 imagens de teste, numa CPU de notebook, da leitura
+do arquivo ao resultado (Seção 9.5 do notebook):
+
+| | Linha de base (N1) | Modelo (YOLO26s) |
+|---|---|---|
+| Tempo por imagem na CPU (mediana) | 148 ms | 513 ms |
+| Tempo por imagem numa GPU T4 (só a rede) | não usa GPU | 28,5 ms |
+| O que precisa ser distribuído | código e parâmetros (poucos kB) | código e pesos (20 MB) |
+| Treino | nenhum | cerca de 1 hora de GPU T4 (Colab) |
+
+O modelo é cerca de 3,5 vezes mais lento na CPU e encontra 7 vezes mais placas; numa GPU, passa
+de 30 imagens por segundo.
+
 ### Como foi feito
 
 - **Divisão por dia de captura**, e não por imagem: os 8 dias de gravação vão inteiros para treino
@@ -66,17 +79,20 @@ pip install -r requirements.txt
 
 python inferir.py caminho/da/foto.jpg                 # uma imagem
 python inferir.py pasta_de_fotos/ --saida resultados  # todas as imagens de uma pasta
+python inferir.py caminho/do/video.mp4                # um vídeo, quadro a quadro
 ```
 
 O modelo treinado já vem no repositório (`modelos/modelo_n2.pt`, 20 MB), junto com o limiar
-escolhido na validação (`modelos/modelo_n2.json`). Não precisa de GPU. Para cada imagem, o
-script:
+escolhido na validação (`modelos/modelo_n2.json`). Não precisa de GPU. Para cada imagem, ou cada
+quadro de vídeo, o script passa por cinco etapas:
 
-1. lê a imagem (JPG, PNG, BMP ou WebP);
-2. faz o mesmo pré-processamento da validação no treino: *letterbox* para 1.280 px, RGB, 0 a 1;
-3. roda o modelo;
-4. imprime as placas acima do limiar e grava, na pasta de saída (`saida_inferencia/` por padrão),
-   a imagem com as caixas desenhadas e um JSON.
+1. **Entrada:** lê a imagem (JPG, PNG, BMP ou WebP) ou o quadro do vídeo (MP4, AVI, MOV, MKV).
+2. **Pré-processamento:** o mesmo da validação no treino: *letterbox* para 1.280 px, RGB, 0 a 1.
+3. **Modelo:** o YOLO26s devolve os candidatos, cada um com caixa, classe e confiança.
+4. **Pós-processamento:** descarta os candidatos abaixo do limiar, leva as caixas de volta à
+   imagem original e troca o número da classe pelo código e pela descrição do CONTRAN.
+5. **Saída:** imprime as placas e grava, na pasta de saída (`saida_inferencia/` por padrão), a
+   imagem ou o vídeo com as caixas desenhadas e um JSON.
 
 ```
 $ python inferir.py captura_2023-10-10_17-29-24_png.rf.b80e265d20f80a4d38bb7a881b00c232.jpg
@@ -91,8 +107,9 @@ causa da carga do modelo; as seguintes, cerca de 0,35 s cada numa CPU de noteboo
 
 | Opção | Efeito |
 |---|---|
-| `--saida PASTA` | Onde gravar as imagens anotadas e os JSON |
+| `--saida PASTA` | Onde gravar as imagens e os vídeos anotados e os JSON |
 | `--limiar 0.25` | Outro limiar de confiança (o padrão é o da validação, 0,41) |
+| `--a-cada 3` | Em vídeo, roda o modelo num quadro a cada 3; os do meio repetem as últimas caixas. Na CPU, cada quadro leva uns 0,35 s a 0,6 s, então um vídeo de 30 quadros por segundo processa mais devagar que o tempo real |
 | `--sem-arquivos` | Só imprime, sem gravar nada |
 | `--modelo ARQ.pt` | Outro peso treinado |
 
