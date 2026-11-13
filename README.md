@@ -72,9 +72,16 @@ de 30 imagens por segundo.
 
 ### Como executar a inferência
 
+Precisa de Python 3.10 ou superior. A instalação traz o PyTorch, algumas centenas de MB, e leva
+alguns minutos na primeira vez.
+
 ```bash
 git clone https://github.com/CaioHenri99/aed-visao-placas-transito.git
 cd aed-visao-placas-transito
+
+python -m venv .venv
+# Windows:      .venv\Scripts\activate
+# Linux/macOS:  source .venv/bin/activate
 pip install -r requirements.txt
 
 python inferir.py caminho/da/foto.jpg                 # uma imagem
@@ -127,10 +134,25 @@ causa da carga do modelo; as seguintes, cerca de 0,35 s cada numa CPU de noteboo
    `modelos/modelo_n2.pt`. No Colab, uma cópia fica em `MyDrive/aed_visao_n2/para_o_repositorio/`,
    na mesma estrutura do repositório, para ser trazida ao Git.
 
-Sem GPU, o notebook roda inteiro mesmo assim: a Seção 7 pula o treino, e as Seções 8 a 10 usam o
-modelo que já está no repositório. Para rodar local, com a base já baixada, aponte a variável de
-ambiente `AED_PASTA_LOCAL` para a pasta dela; sem isso, a Seção 1 baixa a base com a chave do
-Roboflow (veja abaixo, em *Execução*).
+**Sem GPU, o notebook roda inteiro mesmo assim:** a Seção 7 pula o treino, e as Seções 8 a 10
+usam o modelo que já está no repositório. Na sua máquina, com o ambiente da seção anterior:
+
+```bash
+jupyter lab notebooks/checkpoint2_modelo.ipynb
+```
+
+e *Run → Run All Cells*. A Seção 1 baixa a base com a chave gratuita do Roboflow (como obter, em
+*Execução*, na parte da N1). Se a base já estiver baixada, aponte para ela antes de abrir o
+Jupyter, e a chave não é pedida:
+
+```bash
+export AED_PASTA_LOCAL="/caminho/para/Placas-de-Transito-BR-1"     # Linux/macOS
+$env:AED_PASTA_LOCAL = "C:\caminho\para\Placas-de-Transito-BR-1"   # Windows PowerShell
+```
+
+Na CPU, a execução completa leva de 25 a 40 minutos. As partes mais longas são a linha de base na
+base inteira (Seção 5.1), as predições na validação e no teste (Seções 8 e 9) e a busca de
+vazamento (Seção 9.4, de 6 a 13 minutos).
 
 ----
 
