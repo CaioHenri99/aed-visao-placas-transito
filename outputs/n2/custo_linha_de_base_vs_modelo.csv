@@ -1,0 +1,8 @@
+,Linha de base (N1),Modelo (small)
+"F1 de detecção no teste (IoU >= 0,50)",0.108,0.713
+placas encontradas no teste,31 de 263,229 de 263
+ms por imagem na CPU (mediana),148,513
+ms por imagem na CPU (percentil 90),168,597
+imagens por segundo na CPU,6.8,1.9
+ms por imagem na GPU T4 (só a rede),não usa GPU,28.5
+tamanho do que precisa ser distribuído,código + parametros_adotados.json (poucos kB),código + modelo_n2.pt (20 MB)

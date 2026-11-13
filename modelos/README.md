@@ -26,6 +26,10 @@ Seção 8.2. O [`inferir.py`](../inferir.py) lê os dois.
 F1 com IoU ≥ 0,50 e limiar de 0,41. No mesmo teste, o pipeline clássico da N1 tem F1 de detecção
 de 0,108.
 
+**Tempo por imagem**, da leitura do arquivo ao resultado: 513 ms numa CPU de notebook (mediana em
+100 imagens de teste; a linha de base leva 148 ms na mesma máquina) e 28,5 ms numa GPU T4, só a
+passagem pela rede. Detalhes na Seção 9.5 do notebook.
+
 ## Limitações conhecidas
 
 - **A precisão medida é um piso.** A base deixou muitas placas sem anotação, e o modelo é punido

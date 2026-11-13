@@ -53,6 +53,7 @@ e `vazamento_confirmado.csv`: eles guardam julgamentos visuais, feitos uma vez, 
 | `inspecao_vazamento.csv` | Julgamento visual dos 40 pares mais parecidos: mesmo lugar ou não |
 | `vazamento_confirmado.csv` | As 5 placas de validação e teste que também estão no treino |
 | `vazamento_impacto.csv` | Métricas com e sem as imagens dessas 5 placas |
+| `custo_linha_de_base_vs_modelo.csv` | Acerto, tempo por imagem (CPU e GPU) e tamanho da linha de base e do modelo |
 
 ## Figuras (`figuras/`)
 
